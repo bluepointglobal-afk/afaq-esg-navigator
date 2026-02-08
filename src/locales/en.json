@@ -25,8 +25,18 @@
   "landing": {
     "hero": {
       "title": "ESG Compliance Made Simple",
-      "subtitle": "The intelligent platform for UAE, KSA, and Qatar businesses to achieve regulatory compliance",
-      "cta": "Get Started"
+      "subtitle": "Your first compliant ESG report in 2 hours, not 2 months. No sustainability team required.",
+      "cta": "Get Started",
+      "badgeText": "Trusted by 500+ GCC Companies",
+      "ctaStartReport": "Start Free Report",
+      "ctaViewSample": "View Sample Report",
+      "ctaSeeHow": "See How It Works",
+      "trustIndicator1Title": "2 Hours",
+      "trustIndicator1Desc": "Average completion time",
+      "trustIndicator2Title": "29 Metrics",
+      "trustIndicator2Desc": "GCC Unified Framework",
+      "trustIndicator3Title": "6 Countries",
+      "trustIndicator3Desc": "Full GCC coverage"
     },
     "features": {
       "title": "Why Choose AFAQ?",
@@ -87,5 +97,19 @@
     "recommendations": "Recommendations",
     "noGaps": "No significant gaps identified",
     "excellentCompliance": "Excellent Compliance!"
+  },
+  "sampleReport": {
+    "pageTitle": "Sustainability Report Preview (Sample)",
+    "backButton": "Back",
+    "publicSampleBadge": "Public Sample",
+    "exampleOnlyBadge": "Example only",
+    "importantNote": "Important:",
+    "ctaText": "Want your real report generated from your assessment? Return to your results page and upgrade to Pro.",
+    "signInButton": "Sign in",
+    "executiveSummary": "Executive Summary",
+    "materiality": "Materiality Assessment & Priority Topics",
+    "disclosures": "Performance Disclosures & Key Metrics",
+    "actionPlan": "ESG Maturity Roadmap & Action Plan",
+    "evidenceRegister": "Evidence Register & Data Quality"
   }
 }

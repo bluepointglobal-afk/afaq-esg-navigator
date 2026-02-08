@@ -1,9 +1,11 @@
 import { ArrowRight, Clock, Shield, FileCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Hero() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -30,21 +32,17 @@ export function Hero() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-8 fade-in-up">
             <Shield className="w-4 h-4" />
-            <span>Trusted by 500+ GCC Companies</span>
+            <span>{t('landing.hero.badgeText')}</span>
           </div>
 
           {/* Main headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 fade-in-up delay-100">
-            ESG Compliance
-            <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-200 to-white">
-              Made Simple
-            </span>
+            {t('landing.hero.title')}
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-10 fade-in-up delay-200">
-            Your first compliant ESG report in <span className="text-white font-semibold">2 hours</span>, not 2 months. 
-            No sustainability team required.
+            {t('landing.hero.subtitle')}
           </p>
 
           {/* CTA Buttons */}
@@ -54,7 +52,7 @@ export function Hero() {
               className="bg-white text-primary hover:bg-white/90 shadow-2xl hover:shadow-white/20"
               onClick={() => navigate('/auth')}
             >
-              Start Free Report
+              {t('landing.hero.ctaStartReport')}
               <ArrowRight className="w-5 h-5" />
             </Button>
             <Button 
@@ -62,7 +60,7 @@ export function Hero() {
               size="xl"
               onClick={() => navigate('/sample-report')}
             >
-              View Sample Report
+              {t('landing.hero.ctaViewSample')}
               <FileCheck className="w-5 h-5" />
             </Button>
             <Button 
@@ -70,7 +68,7 @@ export function Hero() {
               size="xl"
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              See How It Works
+              {t('landing.hero.ctaSeeHow')}
             </Button>
           </div>
 
@@ -78,18 +76,18 @@ export function Hero() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto fade-in-up delay-400">
             <div className="flex flex-col items-center gap-2 p-4 bg-white/5 backdrop-blur-sm rounded-2xl">
               <Clock className="w-8 h-8 text-emerald-300" />
-              <span className="text-2xl font-bold text-white">2 Hours</span>
-              <span className="text-sm text-white/70">Average completion time</span>
+              <span className="text-2xl font-bold text-white">{t('landing.hero.trustIndicator1Title')}</span>
+              <span className="text-sm text-white/70">{t('landing.hero.trustIndicator1Desc')}</span>
             </div>
             <div className="flex flex-col items-center gap-2 p-4 bg-white/5 backdrop-blur-sm rounded-2xl">
               <FileCheck className="w-8 h-8 text-emerald-300" />
-              <span className="text-2xl font-bold text-white">29 Metrics</span>
-              <span className="text-sm text-white/70">GCC Unified Framework</span>
+              <span className="text-2xl font-bold text-white">{t('landing.hero.trustIndicator2Title')}</span>
+              <span className="text-sm text-white/70">{t('landing.hero.trustIndicator2Desc')}</span>
             </div>
             <div className="flex flex-col items-center gap-2 p-4 bg-white/5 backdrop-blur-sm rounded-2xl">
               <Shield className="w-8 h-8 text-emerald-300" />
-              <span className="text-2xl font-bold text-white">6 Countries</span>
-              <span className="text-sm text-white/70">Full GCC coverage</span>
+              <span className="text-2xl font-bold text-white">{t('landing.hero.trustIndicator3Title')}</span>
+              <span className="text-sm text-white/70">{t('landing.hero.trustIndicator3Desc')}</span>
             </div>
           </div>
         </div>
