@@ -1,0 +1,21 @@
+{
+  "companyId": "11111111-1111-1111-1111-111111111111",
+  "companyName": "Emirates Green Energy LLC",
+  "companyNameArabic": "الإمارات للطاقة الخضراء ذ.م.م",
+  "jurisdiction": "UAE",
+  "listingStatus": "listed",
+  "stockExchange": "ADX",
+  "sector": "Energy",
+  "subsector": "Renewable Energy",
+  "employeeCountBand": "51-250",
+  "annualRevenueBand": "10M-50M",
+  "revenueCurrency": "AED",
+  "operationalYears": 7,
+  "hasInternationalOps": false,
+  "hasCriticalInfrastructure": true,
+  "hasFullTimeEmployees": true,
+  "hasContractors": true,
+  "hasRemoteWorkforce": false,
+  "fiscalYearEnd": 12,
+  "reportingYear": 2024
+}

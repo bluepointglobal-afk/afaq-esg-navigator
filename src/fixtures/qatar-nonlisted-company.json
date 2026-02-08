@@ -1,0 +1,21 @@
+{
+  "companyId": "33333333-2222-2222-2222-222222222222",
+  "companyName": "Doha Construction LLC",
+  "companyNameArabic": "الدوحة للإنشاءات ذ.م.م",
+  "jurisdiction": "Qatar",
+  "listingStatus": "non-listed",
+  "stockExchange": null,
+  "sector": "Construction",
+  "subsector": "Commercial Buildings",
+  "employeeCountBand": "51-250",
+  "annualRevenueBand": "10M-50M",
+  "revenueCurrency": "QAR",
+  "operationalYears": 6,
+  "hasInternationalOps": false,
+  "hasCriticalInfrastructure": false,
+  "hasFullTimeEmployees": true,
+  "hasContractors": true,
+  "hasRemoteWorkforce": false,
+  "fiscalYearEnd": 12,
+  "reportingYear": 2024
+}

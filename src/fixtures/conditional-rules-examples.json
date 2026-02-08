@@ -1,0 +1,65 @@
+{
+  "examples": [
+    {
+      "description": "Show question if company is listed",
+      "rule": {
+        "dependsOnQuestionId": "11111111-1111-1111-1111-111111111111",
+        "operator": "equals",
+        "value": "yes",
+        "showWhen": true
+      }
+    },
+    {
+      "description": "Show question if revenue > 10M",
+      "rule": {
+        "dependsOnQuestionId": "22222222-2222-2222-2222-222222222222",
+        "operator": "greater_than",
+        "value": 10000000,
+        "showWhen": true
+      }
+    },
+    {
+      "description": "Show question if employee count includes '51-250' or '251-1000'",
+      "rule": {
+        "dependsOnQuestionId": "33333333-3333-3333-3333-333333333333",
+        "operator": "contains",
+        "value": ["51-250", "251-1000"],
+        "showWhen": true
+      }
+    },
+    {
+      "description": "Show question if previous question is NOT answered",
+      "rule": {
+        "dependsOnQuestionId": "44444444-4444-4444-4444-444444444444",
+        "operator": "is_not_answered",
+        "showWhen": true
+      }
+    },
+    {
+      "description": "Hide question if user selected 'non-listed'",
+      "rule": {
+        "dependsOnQuestionId": "55555555-5555-5555-5555-555555555555",
+        "operator": "equals",
+        "value": "non-listed",
+        "showWhen": false
+      }
+    },
+    {
+      "description": "Show only if BOTH conditions are met (AND logic - use array of rules)",
+      "rules": [
+        {
+          "dependsOnQuestionId": "66666666-6666-6666-6666-666666666666",
+          "operator": "equals",
+          "value": "UAE",
+          "showWhen": true
+        },
+        {
+          "dependsOnQuestionId": "77777777-7777-7777-7777-777777777777",
+          "operator": "equals",
+          "value": "listed",
+          "showWhen": true
+        }
+      ]
+    }
+  ]
+}

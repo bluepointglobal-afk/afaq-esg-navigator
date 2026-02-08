@@ -1,0 +1,21 @@
+{
+  "companyId": "11111111-2222-2222-2222-222222222222",
+  "companyName": "Dubai Tech Solutions",
+  "companyNameArabic": "دبي للحلول التقنية",
+  "jurisdiction": "UAE",
+  "listingStatus": "non-listed",
+  "stockExchange": null,
+  "sector": "Information Technology",
+  "subsector": "Software Development",
+  "employeeCountBand": "11-50",
+  "annualRevenueBand": "1M-10M",
+  "revenueCurrency": "AED",
+  "operationalYears": 4,
+  "hasInternationalOps": true,
+  "hasCriticalInfrastructure": false,
+  "hasFullTimeEmployees": true,
+  "hasContractors": false,
+  "hasRemoteWorkforce": true,
+  "fiscalYearEnd": 12,
+  "reportingYear": 2024
+}

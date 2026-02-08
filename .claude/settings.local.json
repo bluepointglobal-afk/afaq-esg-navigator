@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(git --version:*)",
+      "Bash(npx --version)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint:*)",
+      "Bash(tree:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm install:*)",
+      "Bash(npm test:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/verify-step2.sh:*)",
+      "Bash(supabase secrets set:*)",
+      "Bash(npx supabase:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(lsof:*)",
+      "Bash(npm run dev:*)",
+      "Bash(xargs kill:*)",
+      "Bash(grep:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)"
+    ]
+  }
+}

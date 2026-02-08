@@ -1,0 +1,35 @@
+{
+  "feature": "Sustainability Report Generator",
+  "evaluated_at": null,
+  "scores": {
+    "mission_fit": {
+      "score": null,
+      "max": 100,
+      "criteria": "Does the feature help SMEs generate sustainability reports and bypass consultants?"
+    },
+    "deliverable_quality": {
+      "score": null,
+      "max": 100,
+      "criteria": "Is the report output professional, structured, and complete?"
+    },
+    "outcome": {
+      "score": null,
+      "max": 100,
+      "criteria": "Can user go from assessment to downloadable report?"
+    },
+    "ux": {
+      "score": null,
+      "max": 100,
+      "criteria": "Is the report generation flow intuitive?"
+    },
+    "market_readiness": {
+      "score": null,
+      "max": 100,
+      "criteria": "Would a GCC SME pay for this output?"
+    }
+  },
+  "total_percent": null,
+  "threshold": 80,
+  "status": "pending",
+  "notes": null
+}

@@ -1,0 +1,74 @@
+{
+  "feature": "Sustainability Report Generator",
+  "branchName": "feature/sustainability-report",
+  "description": "Generate complete sustainability reports with structured sections and GRI-style data annex tables",
+  "stories": [
+    {
+      "id": "SR-001",
+      "title": "Create Report Template Types",
+      "description": "Define SustainabilityReport interface with structured sections",
+      "acceptanceCriteria": [
+        "SustainabilityReport interface in types/compliance.ts",
+        "Sections: executive_summary, environmental, social, governance, methodology, data_annex",
+        "Each section has: title, narrative, metrics[], disclosures[]"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SR-002",
+      "title": "Create Report Section Components",
+      "description": "Build UI components for report sections and data tables",
+      "acceptanceCriteria": [
+        "ReportSection component for narrative + metrics",
+        "DataAnnexTable component for GRI-style tables",
+        "DisclosureIndex component showing addressed disclosures"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SR-003",
+      "title": "Create Report Generator Utility",
+      "description": "Transform disclosure and assessment data into full sustainability report",
+      "acceptanceCriteria": [
+        "generate-report.ts utility created",
+        "Transforms DisclosureOutput + AssessmentResult into SustainabilityReport",
+        "Auto-generates executive summary from scores",
+        "Maps metrics to appropriate sections"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SR-004",
+      "title": "Update Disclosure Page with Report View",
+      "description": "Add full report view to Disclosure page",
+      "acceptanceCriteria": [
+        "Full Report tab added to Disclosure page",
+        "Renders structured report with all sections",
+        "Data annex displayed at bottom"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SR-005",
+      "title": "Update PDF Generator for Report Format",
+      "description": "Enhance PDF export to handle full report structure",
+      "acceptanceCriteria": [
+        "PDF generator handles full report structure",
+        "Table of contents included",
+        "Data annex tables formatted properly"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SR-006",
+      "title": "Build Verification",
+      "description": "Verify all tests pass and build succeeds",
+      "acceptanceCriteria": [
+        "npm run build succeeds",
+        "npm run test passes",
+        "No TypeScript errors"
+      ],
+      "passes": false
+    }
+  ]
+}

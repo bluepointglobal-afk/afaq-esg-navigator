@@ -1,0 +1,21 @@
+{
+  "companyId": "33333333-1111-1111-1111-111111111111",
+  "companyName": "Qatar Finance Corporation",
+  "companyNameArabic": "مؤسسة قطر للتمويل",
+  "jurisdiction": "Qatar",
+  "listingStatus": "listed",
+  "stockExchange": "QSE",
+  "sector": "Financials",
+  "subsector": "Investment Banking",
+  "employeeCountBand": "51-250",
+  "annualRevenueBand": "50M-250M",
+  "revenueCurrency": "QAR",
+  "operationalYears": 12,
+  "hasInternationalOps": true,
+  "hasCriticalInfrastructure": true,
+  "hasFullTimeEmployees": true,
+  "hasContractors": false,
+  "hasRemoteWorkforce": true,
+  "fiscalYearEnd": 12,
+  "reportingYear": 2024
+}

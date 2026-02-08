@@ -1,0 +1,21 @@
+{
+  "companyId": "22222222-1111-1111-1111-111111111111",
+  "companyName": "Saudi Industrial Holdings",
+  "companyNameArabic": "القابضة الصناعية السعودية",
+  "jurisdiction": "KSA",
+  "listingStatus": "listed",
+  "stockExchange": "Tadawul",
+  "sector": "Industrials",
+  "subsector": "Manufacturing",
+  "employeeCountBand": "251-1000",
+  "annualRevenueBand": "50M-250M",
+  "revenueCurrency": "SAR",
+  "operationalYears": 15,
+  "hasInternationalOps": true,
+  "hasCriticalInfrastructure": true,
+  "hasFullTimeEmployees": true,
+  "hasContractors": true,
+  "hasRemoteWorkforce": false,
+  "fiscalYearEnd": 12,
+  "reportingYear": 2024
+}

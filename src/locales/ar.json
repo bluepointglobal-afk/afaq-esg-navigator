@@ -1,0 +1,91 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "back": "رجوع",
+    "next": "التالي",
+    "download": "تحميل",
+    "export": "تصدير",
+    "settings": "الإعدادات",
+    "signOut": "تسجيل الخروج",
+    "language": "اللغة",
+    "english": "الإنجليزية",
+    "arabic": "العربية"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "questionnaire": "الاستبيان",
+    "disclosure": "الإفصاح",
+    "results": "النتائج",
+    "settings": "الإعدادات",
+    "backToDashboard": "العودة إلى لوحة التحكم"
+  },
+  "landing": {
+    "hero": {
+      "title": "الامتثال البيئي والاجتماعي والحوكمة بسهولة",
+      "subtitle": "المنصة الذكية للشركات في الإمارات والسعودية وقطر لتحقيق الامتثال التنظيمي",
+      "cta": "ابدأ الآن"
+    },
+    "features": {
+      "title": "لماذا تختار آفاق؟",
+      "compliance": "الامتثال التنظيمي",
+      "complianceDesc": "ابقَ في المقدمة مع متطلبات ESG في دول الخليج",
+      "reporting": "التقارير الآلية",
+      "reportingDesc": "أنشئ إفصاحات احترافية في دقائق",
+      "insights": "رؤى قابلة للتنفيذ",
+      "insightsDesc": "حدد الفجوات واحصل على توصيات"
+    },
+    "pricing": {
+      "title": "أسعار بسيطة وشفافة",
+      "perReport": "لكل تقرير",
+      "annual": "سنوي",
+      "free": "مجاني",
+      "pro": "احترافي",
+      "enterprise": "مؤسسات"
+    }
+  },
+  "dashboard": {
+    "title": "تقرير ESG",
+    "welcome": "مرحباً بعودتك",
+    "progress": "التقدم الإجمالي",
+    "actionPlan": "خطة العمل البيئية والاجتماعية والحوكمة",
+    "actionPlanDesc": "أكمل الأقسام أدناه لإنشاء الإفصاح الخاص بك.",
+    "startReport": "بدء التقرير",
+    "questionnaire": "استبيان الامتثال",
+    "questionnaireDesc": "تقييم الفجوات",
+    "generateDisclosure": "إنشاء الإفصاح",
+    "generateDisclosureDesc": "تقارير مدعومة بالذكاء الاصطناعي",
+    "environmental": "البيئة",
+    "social": "المجتمع",
+    "governance": "الحوكمة",
+    "inputEvidence": "أدخل الأدلة والمقاييس"
+  },
+  "tier": {
+    "free": "مجاني",
+    "pro": "احترافي",
+    "enterprise": "مؤسسات",
+    "subscription": "الاشتراك",
+    "managePlan": "إدارة خطتك والفواتير",
+    "planIncludes": "تتضمن خطتك:",
+    "upgrade": "ترقية",
+    "upgradeToPro": "الترقية إلى الاحترافي"
+  },
+  "disclosure": {
+    "title": "إفصاح ESG",
+    "generate": "إنشاء الإفصاح",
+    "generating": "جاري الإنشاء...",
+    "downloadPdf": "تحميل PDF",
+    "downloadExcel": "تحميل Excel",
+    "downloadHtml": "تحميل HTML",
+    "downloadJson": "تحميل JSON"
+  },
+  "assessment": {
+    "results": "نتائج تقييم الامتثال",
+    "gaps": "فجوات الامتثال",
+    "recommendations": "التوصيات",
+    "noGaps": "لم يتم تحديد فجوات كبيرة",
+    "excellentCompliance": "امتثال ممتاز!"
+  }
+}

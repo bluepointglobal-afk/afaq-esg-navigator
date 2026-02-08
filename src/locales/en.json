@@ -1,0 +1,91 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "download": "Download",
+    "export": "Export",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "questionnaire": "Questionnaire",
+    "disclosure": "Disclosure",
+    "results": "Results",
+    "settings": "Settings",
+    "backToDashboard": "Back to Dashboard"
+  },
+  "landing": {
+    "hero": {
+      "title": "ESG Compliance Made Simple",
+      "subtitle": "The intelligent platform for UAE, KSA, and Qatar businesses to achieve regulatory compliance",
+      "cta": "Get Started"
+    },
+    "features": {
+      "title": "Why Choose AFAQ?",
+      "compliance": "Regulatory Compliance",
+      "complianceDesc": "Stay ahead of GCC ESG requirements",
+      "reporting": "Automated Reporting",
+      "reportingDesc": "Generate professional disclosures in minutes",
+      "insights": "Actionable Insights",
+      "insightsDesc": "Identify gaps and get recommendations"
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "perReport": "Per Report",
+      "annual": "Annual",
+      "free": "Free",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
+  },
+  "dashboard": {
+    "title": "ESG Report",
+    "welcome": "Welcome back",
+    "progress": "Overall Progress",
+    "actionPlan": "Your ESG Action Plan",
+    "actionPlanDesc": "Complete the sections below to generate your disclosure.",
+    "startReport": "Start Report",
+    "questionnaire": "Compliance Questionnaire",
+    "questionnaireDesc": "Assess your gaps",
+    "generateDisclosure": "Generate Disclosure",
+    "generateDisclosureDesc": "AI-powered reporting",
+    "environmental": "Environmental",
+    "social": "Social",
+    "governance": "Governance",
+    "inputEvidence": "Input evidence & metrics"
+  },
+  "tier": {
+    "free": "Free",
+    "pro": "Pro",
+    "enterprise": "Enterprise",
+    "subscription": "Subscription",
+    "managePlan": "Manage your plan and billing",
+    "planIncludes": "Your plan includes:",
+    "upgrade": "Upgrade",
+    "upgradeToPro": "Upgrade to Pro"
+  },
+  "disclosure": {
+    "title": "ESG Disclosure",
+    "generate": "Generate Disclosure",
+    "generating": "Generating...",
+    "downloadPdf": "Download PDF",
+    "downloadExcel": "Download Excel",
+    "downloadHtml": "Download HTML",
+    "downloadJson": "Download JSON"
+  },
+  "assessment": {
+    "results": "Compliance Assessment Results",
+    "gaps": "Compliance Gaps",
+    "recommendations": "Recommendations",
+    "noGaps": "No significant gaps identified",
+    "excellentCompliance": "Excellent Compliance!"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "companyId": "22222222-2222-2222-2222-222222222222",
+  "companyName": "Riyadh Hospitality Group",
+  "companyNameArabic": "مجموعة الرياض للضيافة",
+  "jurisdiction": "KSA",
+  "listingStatus": "non-listed",
+  "stockExchange": null,
+  "sector": "Hospitality",
+  "subsector": "Hotels & Resorts",
+  "employeeCountBand": "51-250",
+  "annualRevenueBand": "10M-50M",
+  "revenueCurrency": "SAR",
+  "operationalYears": 8,
+  "hasInternationalOps": false,
+  "hasCriticalInfrastructure": false,
+  "hasFullTimeEmployees": true,
+  "hasContractors": true,
+  "hasRemoteWorkforce": false,
+  "fiscalYearEnd": 12,
+  "reportingYear": 2024
+}
