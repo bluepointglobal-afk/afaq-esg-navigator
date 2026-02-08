@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { QuestionnaireResponse, QuestionAnswer } from '@/types/compliance';
+import { DEMO_QUESTIONNAIRE_RESPONSE, isDemoReport } from '@/lib/demo-data';
 
 interface DbQuestionnaireResponse {
   id: string;
@@ -38,6 +39,11 @@ export function useQuestionnaireResponse(reportId: string) {
   return useQuery({
     queryKey: ['questionnaire-response', reportId],
     queryFn: async () => {
+      // Return demo data if demo report
+      if (isDemoReport(reportId)) {
+        return mapDbToQuestionnaireResponse(DEMO_QUESTIONNAIRE_RESPONSE as DbQuestionnaireResponse);
+      }
+
       const { data, error } = await supabase
         .from('questionnaire_responses')
         .select('*')

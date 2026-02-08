@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { DEMO_COMPANY, isDemoReport } from '@/lib/demo-data';
 
 export interface CompanyData {
     id: string;
@@ -22,6 +23,21 @@ export function useCompany() {
     return useQuery({
         queryKey: ['company'],
         queryFn: async () => {
+            // Check if in demo mode
+            const pathReportId = window.location.pathname.split('/').pop();
+            if (isDemoReport(pathReportId)) {
+                return {
+                    id: DEMO_COMPANY.id,
+                    name: DEMO_COMPANY.name,
+                    country: DEMO_COMPANY.region,
+                    industry: DEMO_COMPANY.industry,
+                    employeeCount: DEMO_COMPANY.employees,
+                    annualRevenue: DEMO_COMPANY.revenue_sar,
+                    revenueCurrency: 'SAR',
+                    isListed: false,
+                } as CompanyData;
+            }
+
             // 1. Get current user
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not authenticated');

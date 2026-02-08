@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { DEMO_NARRATIVE, isDemoReport } from '@/lib/demo-data';
 
 export interface ReportNarrative {
   id?: string;
@@ -54,6 +55,22 @@ export function useReportNarrative(reportId: string) {
   return useQuery({
     queryKey: ['report-narrative', reportId],
     queryFn: async () => {
+      // Return demo data if demo report
+      if (isDemoReport(reportId)) {
+        return {
+          id: DEMO_NARRATIVE.id,
+          reportId: DEMO_NARRATIVE.report_id,
+          governanceText: DEMO_NARRATIVE.content,
+          esgText: DEMO_NARRATIVE.content,
+          riskText: DEMO_NARRATIVE.content,
+          transparencyText: DEMO_NARRATIVE.content,
+          governanceStructured: [],
+          esgStructured: [],
+          riskStructured: [],
+          transparencyStructured: [],
+        };
+      }
+
       const { data, error } = await supabase
         .from('report_narratives')
         .select('*')

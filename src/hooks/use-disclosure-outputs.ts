@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { DisclosureOutput, DisclosureSection, EvidenceReference, DisclosureDisclaimer as Disclaimer, QualityChecklistItem } from '@/types/compliance';
 import type { DisclosurePack } from '@/lib/disclosure/orchestrator';
+import { DEMO_DISCLOSURE, isDemoReport } from '@/lib/demo-data';
 
 interface DbDisclosureOutput {
   id: string;
@@ -48,6 +49,11 @@ export function useDisclosureOutput(reportId: string) {
   return useQuery({
     queryKey: ['disclosure-output', reportId],
     queryFn: async () => {
+      // Return demo data if demo report
+      if (isDemoReport(reportId)) {
+        return DEMO_DISCLOSURE as unknown as DisclosureOutput;
+      }
+
       const { data, error } = await supabase
         .from('disclosure_outputs')
         .select('*')

@@ -6,6 +6,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { AssessmentResult, PillarScore, Gap, Recommendation, ScoreExplanation } from '@/types/compliance';
+import { DEMO_ASSESSMENT, isDemoReport } from '@/lib/demo-data';
 
 interface DbAssessmentResult {
   id: string;
@@ -51,6 +52,11 @@ export function useAssessmentResult(reportId: string) {
   return useQuery({
     queryKey: ['assessment-result', reportId],
     queryFn: async () => {
+      // Return demo data if demo report
+      if (isDemoReport(reportId)) {
+        return mapDbToAssessmentResult(DEMO_ASSESSMENT as DbAssessmentResult);
+      }
+
       const { data, error } = await supabase
         .from('assessment_results')
         .select('*')

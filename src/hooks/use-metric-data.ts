@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { DEMO_METRICS, isDemoReport } from '@/lib/demo-data';
 
 export interface MetricData {
     id?: string;
@@ -36,6 +37,20 @@ export function useMetricData(reportId: string) {
     return useQuery({
         queryKey: ['metric-data', reportId],
         queryFn: async () => {
+            // Return demo data if demo report
+            if (isDemoReport(reportId)) {
+                return DEMO_METRICS.map(m => ({
+                    reportId: reportId,
+                    metricCode: m.metricCode,
+                    category: m.category,
+                    valueNumeric: m.valueNumeric,
+                    valueText: m.valueText || null,
+                    valueBoolean: null,
+                    unit: m.unit,
+                    dataSource: 'Demo Data',
+                }));
+            }
+
             const { data, error } = await supabase
                 .from('metric_data')
                 .select('*')
