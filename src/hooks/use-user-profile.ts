@@ -15,7 +15,17 @@ export function useUserProfile() {
         queryKey: ["user-profile"],
         queryFn: async () => {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) throw new Error("Not authenticated");
+            // DEMO MODE: Return demo profile even if not authenticated
+            if (!user) {
+                return {
+                    id: "demo-user",
+                    email: "demo@afaq.local",
+                    companyId: "demo-company",
+                    role: 'admin',
+                    tier: 'pro',
+                    createdAt: undefined,
+                } as UserProfile;
+            }
 
             const { data: profile, error } = await supabase
                 .from("user_profiles")

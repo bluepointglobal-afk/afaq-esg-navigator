@@ -9,9 +9,9 @@ export const DEMO_ASSESSMENT = {
   questionnaire_response_id: 'demo-response-1',
   overall_score: 68,
   pillar_scores: [
-    { pillar: 'governance', score: 72, completeness: 85 },
-    { pillar: 'environmental', score: 65, completeness: 75 },
-    { pillar: 'social', score: 67, completeness: 78 },
+    { pillar: 'governance', score: 72, completeness: 85, totalQuestions: 12, answeredQuestions: 10 },
+    { pillar: 'environmental', score: 65, completeness: 75, totalQuestions: 15, answeredQuestions: 11 },
+    { pillar: 'social', score: 67, completeness: 78, totalQuestions: 13, answeredQuestions: 10 },
   ],
   gap_count: 5,
   critical_gap_count: 3,
@@ -139,7 +139,7 @@ export const DEMO_ASSESSMENT = {
 };
 
 export const DEMO_COMPANY = {
-  id: 'demo-company-1',
+  id: 'd9584a70-b721-4abb-a3b3-f5ac326afccd',
   name: 'Horizon Energy Solutions',
   industry: 'Energy & Utilities',
   region: 'Middle East',
@@ -154,7 +154,7 @@ export const DEMO_COMPANY = {
 export const DEMO_QUESTIONNAIRE_RESPONSE = {
   id: 'demo-response-1',
   report_id: 'demo',
-  company_id: 'demo-company-1',
+  company_id: 'd9584a70-b721-4abb-a3b3-f5ac326afccd',
   responses: {
     'governance-1': 'Yes, board-level oversight exists but needs formalization',
     'environmental-1': 'Currently tracking water usage only',
@@ -167,17 +167,142 @@ export const DEMO_QUESTIONNAIRE_RESPONSE = {
 
 export const DEMO_DISCLOSURE = {
   id: 'demo-disclosure-1',
-  report_id: 'demo',
-  company_id: 'demo-company-1',
-  assessment_id: 'demo-assessment-1',
-  disclosure_html: '<div>Sample disclosure content</div>',
-  disclosure_json: {
-    frameworks: ['IFRS_S1', 'IFRS_S2', 'TCFD', 'GRI'],
-    sections: [],
-  },
-  generated_at: new Date().toISOString(),
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  reportId: 'demo',
+  assessmentId: 'demo-assessment-1',
+  templateId: null,
+  templateVersion: '1.0',
+  jurisdiction: 'KSA' as const,
+  generatedForCompany: 'Horizon Energy Solutions',
+  sections: [
+    {
+      id: 'executive-summary',
+      title: 'Executive Summary',
+      titleArabic: 'الملخص التنفيذي',
+      narrative: 'Horizon Energy Solutions is committed to transparent ESG reporting aligned with international frameworks. This disclosure provides a comprehensive assessment of our sustainability performance and material issues.',
+      narrativeArabic: 'تلتزم حلول الأفق للطاقة بالإفصاح الشفاف عن ESG وفقاً للأطر الدولية. يوفر هذا الكشف تقييماً شاملاً لأدائنا في الاستدامة والمسائل المادية.',
+      dataPoints: [
+        { label: 'Overall Compliance Score', labelArabic: 'درجة الامتثال الإجمالية', value: '68/100', source: 'calculated' },
+        { label: 'GHG Emissions Tracked', labelArabic: 'انبعاثات الغازات الدفيئة المتتبعة', value: 'Partial (Scope 1, 2 only)', source: 'manual_entry' },
+        { label: 'Board ESG Oversight', labelArabic: 'إشراف مجلس الإدارة على ESG', value: 'In Development', source: 'manual_entry' },
+      ],
+      citationPlaceholders: [],
+    },
+    {
+      id: 'governance',
+      title: 'Governance & Ethics',
+      titleArabic: 'الحوكمة والأخلاقيات',
+      narrative: 'Our governance framework is built on transparent decision-making and stakeholder accountability. We are implementing board-level ESG oversight with quarterly KPI reviews.',
+      narrativeArabic: 'يقوم إطار الحوكمة لدينا على صنع القرارات الشفافة ومساءلة أصحاب المصلحة. نحن ننفذ الإشراف على ESG على مستوى المجلس مع استعراضات مؤشرات الأداء الرئيسية ربع السنوية.',
+      dataPoints: [
+        { label: 'Board Independence', labelArabic: 'استقلال المجلس', value: '67%', source: 'manual_entry' },
+        { label: 'Ethics Policy Adoption', labelArabic: 'اعتماد سياسة الأخلاقيات', value: 'Scheduled Q1 2026', source: 'manual_entry' },
+        { label: 'Whistleblower Mechanism', labelArabic: 'آلية الإبلاغ عن الانتهاكات', value: 'Established', source: 'manual_entry' },
+      ],
+      citationPlaceholders: [],
+    },
+    {
+      id: 'environmental',
+      title: 'Environmental Stewardship',
+      titleArabic: 'الإدارة البيئية',
+      narrative: 'We are committed to reducing our environmental footprint through emissions tracking, water management, and renewable energy adoption.',
+      narrativeArabic: 'نحن ملتزمون بتقليل بصمتنا البيئية من خلال تتبع الانبعاثات وإدارة المياه واعتماد الطاقة المتجددة.',
+      dataPoints: [
+        { label: 'Scope 1 GHG Emissions', labelArabic: 'انبعاثات الغازات الدفيئة المباشرة', value: '12,500 tCO2e', source: 'calculated' },
+        { label: 'Scope 2 GHG Emissions', labelArabic: 'انبعاثات الغازات الدفيئة غير المباشرة', value: '8,300 tCO2e', source: 'calculated' },
+        { label: 'Water Intensity', labelArabic: 'كثافة المياه', value: '2.3 m³ per unit produced', source: 'calculated' },
+      ],
+      citationPlaceholders: [],
+    },
+    {
+      id: 'social',
+      title: 'Social Impact & Inclusion',
+      titleArabic: 'التأثير الاجتماعي والشمول',
+      narrative: 'Our workforce is our greatest asset. We invest in talent development, safety, and inclusive workplace practices aligned with GRI standards.',
+      narrativeArabic: 'قوتنا العاملة هي أعظم أصولنا. نستثمر في تطوير المواهب والسلامة وممارسات مكان العمل الشاملة المتوافقة مع معايير GRI.',
+      dataPoints: [
+        { label: 'Women in Workforce', labelArabic: 'النساء في القوة العاملة', value: '28%', source: 'hr_records' },
+        { label: 'Employee Turnover', labelArabic: 'معدل دوران الموظفين', value: '12.5%', source: 'hr_records' },
+        { label: 'Safety Incidents (per 1M hours)', labelArabic: 'حوادث السلامة (لكل 1 مليون ساعة)', value: '0.8', source: 'manual_entry' },
+      ],
+      citationPlaceholders: [],
+    },
+  ],
+  evidenceAppendix: [
+    {
+      id: 'ev-1',
+      sectionId: 'governance',
+      title: 'Board Resolution on ESG Committee',
+      source: 'Board Minutes, January 2026',
+      data: 'Board approved establishment of ESG committee with quarterly oversight mandate',
+      verificationStatus: 'verified' as const,
+    },
+    {
+      id: 'ev-2',
+      sectionId: 'environmental',
+      title: 'GHG Emissions Verification Report',
+      source: 'Third-party auditor',
+      data: 'Scope 1 and 2 emissions verified per ISO 14064-3',
+      verificationStatus: 'verified' as const,
+    },
+    {
+      id: 'ev-3',
+      sectionId: 'social',
+      title: 'Diversity Data 2024',
+      source: 'HR Systems',
+      data: 'Baseline diversity metrics established for reporting period 2024',
+      verificationStatus: 'preliminary' as const,
+    },
+  ],
+  disclaimers: [
+    {
+      id: 'disc-1',
+      type: 'methodology' as const,
+      text: 'This disclosure provides educational insights only and does not constitute legal or regulatory advice. Consult qualified professionals for compliance guidance.',
+      order: 0,
+    },
+    {
+      id: 'disc-2',
+      type: 'forward_looking' as const,
+      text: 'Forward-looking statements regarding ESG targets are subject to risks and uncertainties. Actual results may differ materially.',
+      order: 1,
+    },
+  ],
+  qualityChecklist: [
+    {
+      id: 'qc-1',
+      category: 'Data accuracy',
+      label: 'Data Accuracy',
+      status: 'pass' as const,
+      notes: 'All Scope 1, 2 data verified',
+    },
+    {
+      id: 'qc-2',
+      category: 'Boundary definition',
+      label: 'Boundary Definition',
+      status: 'pass' as const,
+      notes: 'Organizational boundaries clearly defined',
+    },
+    {
+      id: 'qc-3',
+      category: 'Stakeholder relevance',
+      label: 'Stakeholder Relevance',
+      status: 'attention' as const,
+      notes: 'Scope 3 emissions and supply chain data pending',
+    },
+    {
+      id: 'qc-4',
+      category: 'Completeness',
+      label: 'Completeness',
+      status: 'pass' as const,
+      notes: 'All mandatory frameworks covered',
+    },
+  ],
+  status: 'draft' as const,
+  generatedBy: 'system',
+  format: 'json' as const,
+  generatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const DEMO_NARRATIVE = {

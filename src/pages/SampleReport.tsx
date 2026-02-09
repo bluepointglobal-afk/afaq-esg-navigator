@@ -1,12 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, ShieldAlert, Download } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SAMPLE_SUSTAINABILITY_REPORT } from '@/lib/sample/sample-report';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { generatePdf, generateReportPdfFilename } from '@/lib/disclosure/pdf-generator';
 
 function Watermark() {
   return (
@@ -34,6 +35,7 @@ function Watermark() {
 export default function SampleReport() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   const report = useMemo(() => SAMPLE_SUSTAINABILITY_REPORT, []);
   
@@ -49,6 +51,44 @@ export default function SampleReport() {
     return titleMap[sectionId] || sectionId;
   };
 
+  const handleExportPdf = async () => {
+    setIsGeneratingPdf(true);
+    try {
+      // Build HTML content from report sections
+      const htmlContent = `
+        <div style="font-family: system-ui, -apple-system, sans-serif; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #2563eb; padding-bottom: 20px;">
+            <h1 style="font-size: 28px; margin-bottom: 10px;">${t('sampleReport.pageTitle')}</h1>
+            <p style="color: #64748b; margin: 5px 0;">${report.companyName} • Reporting Year ${report.reportingYear} • ${report.jurisdiction}</p>
+            <p style="background: #fef3c7; color: #92400e; padding: 8px 12px; border-radius: 6px; display: inline-block; font-size: 12px; margin-top: 10px;">
+              ⚠️ ${t('sampleReport.exampleOnlyBadge')} - SAMPLE REPORT WITH FICTIONAL DATA
+            </p>
+          </div>
+          <p style="background: #f1f5f9; padding: 15px; border-left: 4px solid #2563eb; margin-bottom: 30px;">
+            <strong>${t('sampleReport.importantNote')}</strong> ${report.note}
+          </p>
+          ${report.sections.map((s) => `
+            <div style="page-break-inside: avoid; margin-bottom: 30px;">
+              <h2 style="font-size: 20px; margin-bottom: 15px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+                ${getSectionTitle(s.id)}
+              </h2>
+              <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #334155;">
+                ${s.content}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      const filename = generateReportPdfFilename(report.companyName, report.reportingYear, 'en');
+      await generatePdf(htmlContent, { filename });
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -62,7 +102,17 @@ export default function SampleReport() {
               </Button>
               <Logo size="sm" />
             </div>
-            <Badge variant="secondary">{t('sampleReport.publicSampleBadge')}</Badge>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="default" 
+                onClick={handleExportPdf}
+                disabled={isGeneratingPdf}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                {isGeneratingPdf ? 'Generating PDF...' : 'Download PDF'}
+              </Button>
+              <Badge variant="secondary">{t('sampleReport.publicSampleBadge')}</Badge>
+            </div>
           </div>
         </div>
       </div>

@@ -88,7 +88,12 @@ export default function Dashboard() {
   };
 
   const handleCreateReport = () => {
-    createReportMutation.mutate(new Date().getFullYear());
+    createReportMutation.mutate(new Date().getFullYear(), {
+      onSuccess: (data) => {
+        // Navigate to questionnaire after report is created
+        navigate(`/compliance/questionnaire/${data.id}`);
+      }
+    });
   };
 
   const handleExport = (format: string) => {

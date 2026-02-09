@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useCompany } from './use-company';
 import { useToast } from './use-toast';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Report {
     id: string;
@@ -22,6 +23,10 @@ export function useActiveReport() {
         queryFn: async () => {
             if (!company?.id) return null;
 
+            // DEMO MODE: Return null to show empty state, let user create a new report
+            return null;
+
+            /* Real Supabase mode (disabled for MVP)
             const { data, error } = await supabase
                 .from('reports')
                 .select('*')
@@ -45,6 +50,7 @@ export function useActiveReport() {
                 createdAt: data.created_at,
                 updatedAt: data.updated_at
             } as Report;
+            */
         },
         enabled: !!company?.id,
     });
@@ -60,6 +66,19 @@ export function useCreateReport() {
         mutationFn: async (year: number) => {
             if (!company?.id) throw new Error("No company found");
 
+            // DEMO MODE: Return demo report without hitting Supabase
+            const demoReport = {
+                id: uuidv4(),
+                company_id: company.id,
+                reporting_year: year,
+                status: 'draft',
+                overall_completion_pct: 0,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+            return demoReport;
+
+            /* Real Supabase mode (disabled for MVP)
             const { data, error } = await supabase
                 .from('reports')
                 .insert({
@@ -73,6 +92,7 @@ export function useCreateReport() {
 
             if (error) throw error;
             return data;
+            */
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['active-report'] });

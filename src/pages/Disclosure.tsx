@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Download, FileJson, Edit3, RefreshCw, BarChart3, FileText, ShieldCheck, BookOpen, ClipboardList } from 'lucide-react';
+import { ArrowLeft, Download, FileJson, Edit3, RefreshCw, BarChart3, FileText, ShieldCheck, BookOpen, ClipboardList, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -361,6 +361,23 @@ export default function Disclosure() {
 
   if (disclosureLoading || profileLoading || companyLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!company) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="p-8 max-w-md">
+          <div className="flex items-center gap-3 text-destructive mb-4">
+            <AlertCircle className="w-6 h-6" />
+            <h2 className="text-xl font-semibold">Company Profile Not Found</h2>
+          </div>
+          <p className="text-muted-foreground mb-4">
+            Please complete your company profile to generate a disclosure report.
+          </p>
+          <Button onClick={() => navigate('/dashboard')}>Return to Dashboard</Button>
+        </Card>
+      </div>
+    );
   }
 
   return (

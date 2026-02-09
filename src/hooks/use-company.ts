@@ -23,7 +23,20 @@ export function useCompany() {
     return useQuery({
         queryKey: ['company'],
         queryFn: async () => {
-            // Check if in demo mode
+            // ALWAYS use demo company (auth bypass for MVP)
+            return {
+                id: DEMO_COMPANY.id,
+                name: DEMO_COMPANY.name,
+                country: DEMO_COMPANY.region,
+                industry: DEMO_COMPANY.industry,
+                employeeCount: DEMO_COMPANY.employees,
+                annualRevenue: DEMO_COMPANY.revenue_sar,
+                revenueCurrency: 'SAR',
+                isListed: false,
+            } as CompanyData;
+
+            // Check if in demo mode (disabled for now - always demo)
+            /*
             const pathReportId = window.location.pathname.split('/').pop();
             if (isDemoReport(pathReportId)) {
                 return {
@@ -38,6 +51,9 @@ export function useCompany() {
                 } as CompanyData;
             }
 
+            // Real auth mode disabled for MVP (always demo)
+            */
+            /*
             // 1. Get current user
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not authenticated');
@@ -77,6 +93,7 @@ export function useCompany() {
                 logoUrl: company.logo_url,
                 created_at: company.created_at
             } as CompanyData;
+            */
         },
     });
 }
