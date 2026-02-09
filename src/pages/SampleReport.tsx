@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SAMPLE_SUSTAINABILITY_REPORT } from '@/lib/sample/sample-report';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { generatePdf, generateReportPdfFilename } from '@/lib/disclosure/pdf-generator';
+import { generateServerPdf, generateReportPdfFilename } from '@/lib/disclosure/pdf-generator-v2';
 
 function Watermark() {
   return (
@@ -54,36 +54,19 @@ export default function SampleReport() {
   const handleExportPdf = async () => {
     setIsGeneratingPdf(true);
     try {
-      // Build HTML content from report sections
-      const htmlContent = `
-        <div style="font-family: system-ui, -apple-system, sans-serif; padding: 20px;">
-          <div style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #2563eb; padding-bottom: 20px;">
-            <h1 style="font-size: 28px; margin-bottom: 10px;">${t('sampleReport.pageTitle')}</h1>
-            <p style="color: #64748b; margin: 5px 0;">${report.companyName} • Reporting Year ${report.reportingYear} • ${report.jurisdiction}</p>
-            <p style="background: #fef3c7; color: #92400e; padding: 8px 12px; border-radius: 6px; display: inline-block; font-size: 12px; margin-top: 10px;">
-              ⚠️ ${t('sampleReport.exampleOnlyBadge')} - SAMPLE REPORT WITH FICTIONAL DATA
-            </p>
-          </div>
-          <p style="background: #f1f5f9; padding: 15px; border-left: 4px solid #2563eb; margin-bottom: 30px;">
-            <strong>${t('sampleReport.importantNote')}</strong> ${report.note}
-          </p>
-          ${report.sections.map((s) => `
-            <div style="page-break-inside: avoid; margin-bottom: 30px;">
-              <h2 style="font-size: 20px; margin-bottom: 15px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-                ${getSectionTitle(s.id)}
-              </h2>
-              <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #334155;">
-                ${s.content}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
+      // Prepare payload for server-side PDF generation
+      const payload = {
+        companyName: report.companyName,
+        reportingYear: report.reportingYear,
+        jurisdiction: report.jurisdiction,
+        sections: report.sections,
+      };
 
       const filename = generateReportPdfFilename(report.companyName, report.reportingYear, 'en');
-      await generatePdf(htmlContent, { filename });
+      await generateServerPdf(payload, filename);
     } catch (error) {
       console.error('PDF generation failed:', error);
+      alert('Failed to generate PDF. Please try again.');
     } finally {
       setIsGeneratingPdf(false);
     }
