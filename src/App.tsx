@@ -19,6 +19,8 @@ import CompanySettings from "./pages/CompanySettings";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import SampleReport from "./pages/SampleReport";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 import MetricInput from '@/pages/MetricInput';
 
@@ -44,6 +46,8 @@ const App = () => (
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/sample-report" element={<SampleReport />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
             {/* Protected routes */}
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />

@@ -237,6 +237,22 @@ export default function Questionnaire() {
     return () => clearTimeout(timer);
   }, [answers, response?.id, localResponseId]);
 
+  // Check if company profile exists
+  if (!companyLoading && !company) {
+    return (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4 p-4">
+        <AlertCircle className="w-12 h-12 text-destructive" />
+        <h2 className="text-xl font-semibold">Company Profile Required</h2>
+        <p className="text-muted-foreground text-center max-w-md">
+          Please complete your company profile before starting the questionnaire.
+        </p>
+        <Button onClick={() => navigate('/onboarding')}>
+          Complete Profile
+        </Button>
+      </div>
+    );
+  }
+
   if (!template || companyLoading || !template.sections || template.sections.length === 0) {
     return <div className="min-h-screen flex items-center justify-center">Loading questionnaire...</div>;
   }

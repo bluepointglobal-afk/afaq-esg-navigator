@@ -15,8 +15,13 @@ export function useUserProfile() {
         queryKey: ["user-profile"],
         queryFn: async () => {
             const { data: { user } } = await supabase.auth.getUser();
-            // DEMO MODE: Return demo profile even if not authenticated
-            if (!user) {
+
+            // Check if in demo mode
+            const pathReportId = window.location.pathname.split('/').pop();
+            const isDemo = pathReportId === 'demo' || pathReportId === 'demo-sample';
+
+            // Only return demo profile if explicitly in demo mode
+            if (!user && isDemo) {
                 return {
                     id: "demo-user",
                     email: "demo@afaq.local",
@@ -25,6 +30,11 @@ export function useUserProfile() {
                     tier: 'pro',
                     createdAt: undefined,
                 } as UserProfile;
+            }
+
+            // Require authentication for non-demo routes
+            if (!user) {
+                throw new Error('Not authenticated');
             }
 
             const { data: profile, error } = await supabase

@@ -1,4 +1,5 @@
 import { Progress } from "@/components/ui/progress";
+import { Clock } from "lucide-react";
 import type { QuestionSection, QuestionAnswer } from "@/types/compliance";
 
 interface ProgressTrackerProps {
@@ -24,14 +25,29 @@ export function ProgressTracker({
       : 0;
   };
 
+  // Calculate time estimate (avg 2 min per question)
+  const remainingQuestions = totalCount - answeredCount;
+  const estimatedMinutes = remainingQuestions * 2;
+  const estimatedTime = estimatedMinutes < 60
+    ? `${estimatedMinutes} min`
+    : `${Math.round(estimatedMinutes / 60)} hr ${estimatedMinutes % 60} min`;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <div>
+        <div className="flex-1">
           <span className="text-sm font-medium">Overall Progress</span>
           <span className="text-sm text-muted-foreground ml-2">
             {answeredCount} of {totalCount} questions answered
           </span>
+          {remainingQuestions > 0 && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">
+                ~{estimatedTime} remaining
+              </span>
+            </div>
+          )}
         </div>
         <span className="text-2xl font-bold text-primary">{completion}%</span>
       </div>

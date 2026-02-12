@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 const plans = [
   {
     name: "Free",
-    price: "$0",
+    price: "SAR 0",
     period: "forever",
     description: "Perfect for trying out AFAQ",
     features: [
@@ -28,10 +28,11 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "$99",
+    price: "SAR 369",
     period: "per report",
-    alternatePrice: "or $299/year unlimited",
+    alternatePrice: "or SAR 1,099/year unlimited",
     description: "For companies needing compliant reports",
+    savings: "Save SAR 10,000+ vs. Big 4 consultants",
     features: [
       { text: "Unlimited reports", included: true },
       { text: "Full data collection", included: true },
@@ -48,8 +49,8 @@ const plans = [
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    period: "pricing",
+    price: "SAR 10k-30k",
+    period: "per year",
     description: "For multi-entity groups and large organizations",
     features: [
       { text: "Everything in Pro", included: true },
@@ -110,7 +111,7 @@ export function Pricing() {
             Simple, Transparent Pricing
           </h2>
           <p className="text-lg text-muted-foreground">
-            Save thousands compared to consultants. Big 4 firms charge $5,000-$20,000 per report.
+            Save thousands compared to consultants. Big 4 firms charge SAR 20,000-75,000 per report.
           </p>
         </div>
 
@@ -145,6 +146,11 @@ export function Pricing() {
                   <p className="text-sm text-secondary font-medium mt-1">{plan.alternatePrice}</p>
                 )}
                 <p className="text-muted-foreground mt-2">{plan.description}</p>
+                {'savings' in plan && plan.savings && (
+                  <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 text-xs font-semibold rounded-full">
+                    💰 {plan.savings}
+                  </div>
+                )}
               </CardHeader>
 
               <CardContent>
@@ -159,7 +165,7 @@ export function Pricing() {
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      $99/report
+                      SAR 369/report
                     </button>
                     <button
                       onClick={() => setSelectedPriceType('annual')}
@@ -169,7 +175,7 @@ export function Pricing() {
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      $299/year
+                      SAR 1,099/year
                     </button>
                   </div>
                 )}
