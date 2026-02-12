@@ -6,23 +6,33 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { lazy, Suspense } from "react";
+
+// Eager load (critical pages)
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
-import Questionnaire from "./pages/Questionnaire";
-import ComplianceResults from "./pages/ComplianceResults";
-import Disclosure from "./pages/Disclosure";
-import NarrativeIntake from "./pages/NarrativeIntake";
-import NotFound from "./pages/NotFound";
-import CompanySettings from "./pages/CompanySettings";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentCancel from "./pages/PaymentCancel";
-import SampleReport from "./pages/SampleReport";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
-import MetricInput from '@/pages/MetricInput';
+// Lazy load (heavy pages)
+const Questionnaire = lazy(() => import("./pages/Questionnaire"));
+const ComplianceResults = lazy(() => import("./pages/ComplianceResults"));
+const Disclosure = lazy(() => import("./pages/Disclosure"));
+const NarrativeIntake = lazy(() => import("./pages/NarrativeIntake"));
+const MetricInput = lazy(() => import("./pages/MetricInput"));
+const CompanySettings = lazy(() => import("./pages/CompanySettings"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const PaymentCancel = lazy(() => import("./pages/PaymentCancel"));
+const SampleReport = lazy(() => import("./pages/SampleReport"));
+
+// Loading fallback
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,7 +51,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ErrorBoundary>
-            <Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
             {/* Public routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
@@ -63,9 +74,10 @@ const App = () => (
             <Route path="/payment/success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
             <Route path="/payment/cancel" element={<PaymentCancel />} />
 
-            {/* Fallback */}
-            <Route path="*" element={<Landing />} />
-          </Routes>
+              {/* Fallback */}
+              <Route path="*" element={<Landing />} />
+            </Routes>
+            </Suspense>
           </ErrorBoundary>
         </BrowserRouter>
       </TooltipProvider>
