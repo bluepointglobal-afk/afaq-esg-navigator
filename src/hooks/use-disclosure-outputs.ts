@@ -107,7 +107,7 @@ export function useDisclosureOutputById(disclosureId: string) {
 }
 
 /**
- * Generate disclosure using Edge Function
+ * Generate disclosure using Railway backend (no timeout limits)
  * Calls server-side AI generation (PAID TIER ONLY)
  */
 export function useGenerateDisclosure() {
@@ -118,32 +118,91 @@ export function useGenerateDisclosure() {
       reportId: string;
       disclosurePack: DisclosurePack;
       language?: 'en' | 'ar';
+      onProgress?: (progress: number) => void;
     }) => {
-      // Get current session token (optional for testing)
+      // Get current session token
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
-      // Call Edge Function (allow anonymous for testing)
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate_disclosure`,
+      if (!session?.access_token) {
+        throw new Error('Authentication required');
+      }
+
+      const backendUrl = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
+
+      // Step 1: Queue the job
+      const queueResponse = await fetch(
+        `${backendUrl}/api/disclosure/generate`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${session?.access_token || 'anonymous'}`,
+            Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify(params),
+          body: JSON.stringify({
+            reportId: params.reportId,
+            frameworks: ['ifrs-s1', 'ifrs-s2'], // Extract from disclosurePack if needed
+            companyProfile: {
+              name: params.disclosurePack.companyProfile?.companyName,
+              industry: params.disclosurePack.companyProfile?.industry,
+              jurisdiction: params.disclosurePack.companyProfile?.jurisdiction,
+            },
+            language: params.language || 'en',
+          }),
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown API error' }));
+      if (!queueResponse.ok) {
+        const errorData = await queueResponse.json().catch(() => ({ error: 'Unknown API error' }));
         if (errorData.error === 'TIER_INSUFFICIENT') throw new Error('TIER_INSUFFICIENT');
-        throw new Error(errorData.error || 'Disclosure generation failed');
+        throw new Error(errorData.error || 'Failed to queue disclosure generation');
       }
 
-      return await response.json();
+      const { jobId } = await queueResponse.json();
+
+      // Step 2: Poll for job status
+      const maxAttempts = 120; // 2 minutes max (1 second intervals)
+      let attempts = 0;
+
+      while (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+
+        const statusResponse = await fetch(
+          `${backendUrl}/api/disclosure/status/${jobId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }
+        );
+
+        if (!statusResponse.ok) {
+          throw new Error('Failed to check job status');
+        }
+
+        const statusData = await statusResponse.json();
+        const { status, progress, result, error } = statusData;
+
+        // Update progress callback
+        if (params.onProgress && typeof progress === 'number') {
+          params.onProgress(progress);
+        }
+
+        // Job completed successfully
+        if (status === 'completed' && result) {
+          return result;
+        }
+
+        // Job failed
+        if (status === 'failed') {
+          throw new Error(error || 'Disclosure generation failed');
+        }
+
+        attempts++;
+      }
+
+      throw new Error('Job timed out after 2 minutes');
     },
   });
 }
@@ -317,8 +376,9 @@ export function useGenerateAndSaveDisclosure() {
       reportId: string;
       disclosurePack: DisclosurePack;
       language?: 'en' | 'ar';
+      onProgress?: (progress: number) => void;
     }) => {
-      // 1. Generate via Edge Function
+      // 1. Generate via Railway backend (with progress tracking)
       const aiResult = await generateDisclosure.mutateAsync(params);
       const isArabic = params.language === 'ar';
 

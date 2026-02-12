@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
 import { Logo } from '@/components/layout/Logo';
 import { UpgradePrompt } from '@/components/assessment/UpgradePrompt';
 import { useToast } from '@/hooks/use-toast';
@@ -47,6 +48,7 @@ export default function Disclosure() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const [languageView, setLanguageView] = useState<'en' | 'ar'>('en');
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>(['IFRS_S1', 'IFRS_S2', 'TCFD']);
@@ -101,6 +103,7 @@ export default function Disclosure() {
     }
 
     setIsGenerating(true);
+    setGenerationProgress(0);
 
     try {
       // Map database company to CompanyProfile type
@@ -172,6 +175,7 @@ export default function Disclosure() {
       await generateAndSave({
         reportId: reportId!,
         disclosurePack,
+        onProgress: (progress) => setGenerationProgress(progress),
       });
 
       toast({
@@ -485,16 +489,26 @@ export default function Disclosure() {
                     </div>
                   </div>
 
-                  <Button onClick={handleGenerate} disabled={isGenerating} size="lg" className="px-12 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all">
-                    {isGenerating ? (
-                      <>
-                        <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
-                        Analyzing Evidence...
-                      </>
-                    ) : (
-                      'Generate Disclosure Report'
+                  <div className="space-y-4">
+                    <Button onClick={handleGenerate} disabled={isGenerating} size="lg" className="w-full px-12 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all">
+                      {isGenerating ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
+                          Analyzing Evidence...
+                        </>
+                      ) : (
+                        'Generate Disclosure Report'
+                      )}
+                    </Button>
+                    {isGenerating && (
+                      <div className="space-y-2">
+                        <Progress value={generationProgress} className="h-2" />
+                        <p className="text-sm text-center text-muted-foreground">
+                          {generationProgress}% complete
+                        </p>
+                      </div>
                     )}
-                  </Button>
+                  </div>
                 </Card>
               ) : (
                 <Tabs value={activeView} onValueChange={(v) => setActiveView(v as 'disclosure' | 'report')} className="space-y-6">
