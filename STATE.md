@@ -7,9 +7,10 @@
 - Target: 7.0
 - Walker Report: ~/m2m_reports/afaq_phase4_loop1_docker.md
 - PRD: ~/m2m_reports/afaq-product-requirements-document.md
-- Deployed URL: https://afaq-esg-navigator.vercel.app (deployment pending)
-- Repo: ~/.openclaw/workspace/03_REPOS/AFAQesg/
-- Commit: d9686e0 (Sprint 0,1,2 complete)
+- Deployed URL: https://afaq-esg-navigator.vercel.app (deployed ✓)
+- Repo: https://github.com/bluepointglobal-afk/afaq-esg-navigator
+- Commit: 321acef (Sprint 0,1,2 + test users)
+- Test Users: See TEST_USERS.md
 
 ## P0 (Showstoppers) - FIXED ✓
 - [x] P0-1: Data isolation bug (fixed: use real user company data)
@@ -39,3 +40,4 @@
 | 2026-02-12 | 2 | 4.0/10 | Walker completed: 3 P0, 5 P1, 4 P2 bugs found | 1 |
 | 2026-02-12 | 2 | — | PRD created for GCC monetization (3-week roadmap) | 1 |
 | 2026-02-12 | 2→3 | — | Sprint 0,1,2 implemented (P0 fixes + trust + value) | 2 |
+| 2026-02-12 | 3 | — | Deployed to production + test users created | 2 |
