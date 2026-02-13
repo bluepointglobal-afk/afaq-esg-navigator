@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { supabase } from '../server';
-import IORedis from 'ioredis';
+import { disclosureQueue } from '../queues/disclosure.queue';
 
 const router = Router();
 
@@ -24,15 +24,10 @@ router.get('/', async (req, res) => {
     health.status = 'degraded';
   }
 
-  // Check Redis
+  // Check Redis via BullMQ
   try {
-    const redis = new IORedis(process.env.REDIS_URL!, {
-      lazyConnect: true,
-      maxRetriesPerRequest: 1,
-    });
-    await redis.connect();
-    await redis.ping();
-    await redis.quit();
+    const client = await disclosureQueue.client;
+    await client.ping();
     health.checks.redis = 'healthy';
   } catch (error) {
     health.checks.redis = 'unhealthy';
