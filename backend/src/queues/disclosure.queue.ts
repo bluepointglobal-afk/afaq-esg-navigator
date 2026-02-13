@@ -1,13 +1,16 @@
 import { Queue, Worker, Job } from 'bullmq';
-import IORedis from 'ioredis';
 import { generateDisclosureContent } from '../services/disclosure.service';
 import { supabase } from '../server';
 import { logger } from '../utils/logger';
 
-// Redis connection
-const connection = new IORedis(process.env.REDIS_URL!, {
+// Redis connection configuration for BullMQ
+// BullMQ creates its own Redis connection from these options
+const connection = {
+  host: process.env.REDIS_URL ? new URL(process.env.REDIS_URL).hostname : 'localhost',
+  port: process.env.REDIS_URL ? parseInt(new URL(process.env.REDIS_URL).port) : 6379,
+  password: process.env.REDIS_URL ? new URL(process.env.REDIS_URL).password : undefined,
   maxRetriesPerRequest: null,
-});
+};
 
 // Queue for disclosure generation
 export const disclosureQueue = new Queue('disclosure-generation', {
