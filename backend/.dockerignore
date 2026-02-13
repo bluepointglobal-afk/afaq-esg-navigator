@@ -1,0 +1,30 @@
+# Node modules (will be installed in container)
+node_modules/
+
+# Build output (will be generated in container)
+dist/
+
+# Development files
+*.md
+.env*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
