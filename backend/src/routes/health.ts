@@ -38,4 +38,16 @@ router.get('/', async (req, res) => {
   res.status(statusCode).json(health);
 });
 
+// Debug endpoint - shows which env vars are set (not values)
+router.get('/env-check', (req, res) => {
+  res.json({
+    SUPABASE_URL: !!process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_KEY: !!process.env.SUPABASE_SERVICE_KEY,
+    FRONTEND_URL: !!process.env.FRONTEND_URL,
+    REDIS_URL: !!process.env.REDIS_URL,
+    OPENROUTER_API_KEY: !!process.env.OPENROUTER_API_KEY,
+    NODE_ENV: process.env.NODE_ENV,
+  });
+});
+
 export default router;
