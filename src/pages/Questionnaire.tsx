@@ -130,19 +130,43 @@ export default function Questionnaire() {
         }
 
         // Check if report exists, if not create it
-        const { data: existingReport } = await supabase
+        const { data: existingReport, error: reportCheckError } = await supabase
           .from('reports')
           .select('id')
           .eq('id', reportId)
           .maybeSingle();
 
+        if (reportCheckError) {
+          console.error('Error checking for existing report:', reportCheckError);
+          toast({
+            title: "Error",
+            description: "Failed to check report status. Please refresh.",
+            variant: "destructive",
+          });
+          setIsInitializing(false);
+          return;
+        }
+
         if (!existingReport && reportId !== "MOCK_REPORT_ID") {
-          await supabase.from('reports').insert({
+          console.log('Creating report:', { reportId, companyId: company.id });
+          const { error: reportCreateError } = await supabase.from('reports').insert({
             id: reportId,
             company_id: company.id,
             reporting_year: new Date().getFullYear(),
             status: 'in_progress',
           });
+
+          if (reportCreateError) {
+            console.error('Error creating report:', reportCreateError);
+            toast({
+              title: "Error",
+              description: `Failed to create report: ${reportCreateError.message}`,
+              variant: "destructive",
+            });
+            setIsInitializing(false);
+            return;
+          }
+          console.log('Report created successfully');
         }
 
         // Create the questionnaire response
@@ -158,13 +182,14 @@ export default function Questionnaire() {
           .single();
 
         if (error) {
-          console.error('Error creating response:', error);
+          console.error('Error creating questionnaire response:', error);
           toast({
             title: "Error",
-            description: "Failed to initialize questionnaire. Please refresh.",
+            description: `Failed to initialize questionnaire: ${error.message}`,
             variant: "destructive",
           });
         } else if (newResponse) {
+          console.log('Questionnaire response created:', newResponse.id);
           setLocalResponseId(newResponse.id);
           await refetchResponse();
         }
