@@ -49,7 +49,12 @@ const worker = new Worker(
         .single();
 
       if (qError || !questionnaireResponse) {
-        throw new Error('Questionnaire response not found');
+        logger.error('Failed to fetch questionnaire response', {
+          reportId,
+          error: qError,
+          hasData: !!questionnaireResponse,
+        });
+        throw new Error(`Questionnaire response not found: ${qError?.message || 'No data returned'}`);
       }
 
       await job.updateProgress(20);

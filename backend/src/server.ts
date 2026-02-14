@@ -13,14 +13,17 @@ import { authenticate } from './middleware/auth';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Supabase client
+// Supabase client with service role (bypasses RLS)
 export const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!, // Service key for backend operations
+  process.env.SUPABASE_SERVICE_KEY!, // Service key bypasses RLS
   {
     auth: {
       autoRefreshToken: false,
       persistSession: false
+    },
+    db: {
+      schema: 'public'
     }
   }
 );
