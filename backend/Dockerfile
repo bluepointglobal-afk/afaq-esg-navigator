@@ -9,9 +9,8 @@ WORKDIR /app
 # Copy package files first for better caching
 COPY package*.json ./
 
-# Install production dependencies only
-# Using npm ci for reproducible builds
-RUN npm ci --only=production && npm cache clean --force
+# Install ALL dependencies (including TypeScript for build)
+RUN npm ci
 
 # Copy TypeScript source and build config
 COPY tsconfig.json ./
@@ -20,8 +19,10 @@ COPY src ./src
 # Build TypeScript to JavaScript
 RUN npm run build
 
-# Remove source files to reduce image size
-RUN rm -rf src tsconfig.json
+# Remove devDependencies and source files to reduce image size
+RUN npm prune --production && \
+    rm -rf src tsconfig.json && \
+    npm cache clean --force
 
 # Expose port (Railway will override with PORT env var)
 EXPOSE 3001
