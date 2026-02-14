@@ -101,19 +101,33 @@ const worker = new Worker(
 
       await job.updateProgress(80);
 
-      // 6. Save to database
+      // 6. Save to database (map to actual schema columns)
       const { data: savedDisclosure, error: saveError } = await supabase
         .from('disclosure_outputs')
         .insert({
           report_id: reportId,
-          ...disclosureContent,
+          assessment_id: assessment?.id || null,
+          template_id: null,
+          version: '1.0',
+          template_version: '1.0',
+          jurisdiction: companyProfile?.jurisdiction || 'UAE',
+          generated_for_company: companyProfile?.name || 'Unknown',
+          sections: disclosureContent.sections || [],
+          evidence_appendix: disclosureContent.evidence_appendix || [],
+          disclaimers: disclosureContent.disclaimers || [],
+          quality_checklist: disclosureContent.quality_checklist || [],
           status: 'complete',
+          generated_at: new Date().toISOString(),
           generated_by: userId,
+          format: 'json',
+          listing_status: 'draft',
+          errors: null,
         })
         .select()
         .single();
 
       if (saveError) {
+        logger.error('Failed to save disclosure', { saveError, reportId });
         throw new Error(`Failed to save disclosure: ${saveError.message}`);
       }
 
