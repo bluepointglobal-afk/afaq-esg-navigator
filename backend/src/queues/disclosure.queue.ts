@@ -3,12 +3,13 @@ import { generateDisclosureContent } from '../services/disclosure.service';
 import { supabase } from '../server';
 import { logger } from '../utils/logger';
 
-// Redis connection configuration for BullMQ
-// BullMQ creates its own Redis connection from these options
+// Redis connection - parse URL for BullMQ connection options
+const redisUrl = new URL(process.env.REDIS_URL || 'redis://localhost:6379');
 const connection = {
-  host: process.env.REDIS_URL ? new URL(process.env.REDIS_URL).hostname : 'localhost',
-  port: process.env.REDIS_URL ? parseInt(new URL(process.env.REDIS_URL).port) : 6379,
-  password: process.env.REDIS_URL ? new URL(process.env.REDIS_URL).password : undefined,
+  host: redisUrl.hostname,
+  port: parseInt(redisUrl.port) || 6379,
+  username: redisUrl.username || undefined,
+  password: redisUrl.password || undefined,
   maxRetriesPerRequest: null,
 };
 
