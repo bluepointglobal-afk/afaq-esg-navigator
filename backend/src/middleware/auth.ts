@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { supabase } from '../server';
+import { createClient } from '@supabase/supabase-js';
 
 declare global {
   namespace Express {
@@ -23,9 +23,22 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 
     const token = authHeader.split(' ')[1];
 
-    // Use service role client to verify user JWT
-    // Service role can call getUser() with any valid user JWT
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    // Create Supabase client with user's JWT to verify it
+    // This validates the token and gets the user
+    const supabaseWithUserToken = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: authHeader
+          }
+        }
+      }
+    );
+
+    // Get user from the token (validates JWT)
+    const { data: { user }, error } = await supabaseWithUserToken.auth.getUser();
 
     if (error || !user) {
       console.error('Auth error:', error);
