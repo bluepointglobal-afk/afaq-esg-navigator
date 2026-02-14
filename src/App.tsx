@@ -20,6 +20,7 @@ import Privacy from "./pages/Privacy";
 const Questionnaire = lazy(() => import("./pages/Questionnaire"));
 const ComplianceResults = lazy(() => import("./pages/ComplianceResults"));
 const Disclosure = lazy(() => import("./pages/Disclosure"));
+const DisclosureDataCollection = lazy(() => import("./pages/DisclosureDataCollection"));
 const NarrativeIntake = lazy(() => import("./pages/NarrativeIntake"));
 const MetricInput = lazy(() => import("./pages/MetricInput"));
 const CompanySettings = lazy(() => import("./pages/CompanySettings"));
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/compliance/results/:reportId" element={<ProtectedRoute><ComplianceResults /></ProtectedRoute>} />
             <Route path="/compliance/narrative/:reportId" element={<ProtectedRoute><NarrativeIntake /></ProtectedRoute>} />
             <Route path="/compliance/metrics/:reportId" element={<ProtectedRoute><MetricInput /></ProtectedRoute>} />
+            <Route path="/disclosure/data/:reportId" element={<ProtectedRoute><DisclosureDataCollection /></ProtectedRoute>} />
             <Route path="/compliance/disclosure/:reportId" element={<ProtectedRoute><Disclosure /></ProtectedRoute>} />
 
             {/* Payment routes */}

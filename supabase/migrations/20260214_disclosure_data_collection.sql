@@ -2,8 +2,9 @@
 -- Created: 2026-02-14
 -- Purpose: Support enhanced disclosure generation with narratives, metrics, and materiality
 
--- Table 1: Report Narratives (CEO message, pillars, strategy, case studies)
-CREATE TABLE IF NOT EXISTS report_narratives (
+-- Table 1: Disclosure Narratives (CEO message, pillars, strategy, case studies)
+-- Note: Separate from existing disclosure_narratives table which has different schema
+CREATE TABLE IF NOT EXISTS disclosure_narratives (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   report_id UUID NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
 
@@ -56,8 +57,9 @@ CREATE TABLE IF NOT EXISTS report_narratives (
   UNIQUE(report_id)
 );
 
--- Table 2: Report Metrics (quantitative data)
-CREATE TABLE IF NOT EXISTS report_metrics (
+-- Table 2: Disclosure Metrics (quantitative data)
+-- Note: Separate from existing metric_data table which has flexible schema
+CREATE TABLE IF NOT EXISTS disclosure_metrics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   report_id UUID NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
 
@@ -110,8 +112,8 @@ CREATE TABLE IF NOT EXISTS report_metrics (
   UNIQUE(report_id)
 );
 
--- Table 3: Report Evidence (uploaded documents and photos)
-CREATE TABLE IF NOT EXISTS report_evidence (
+-- Table 3: Disclosure Evidence (uploaded documents and photos)
+CREATE TABLE IF NOT EXISTS disclosure_evidence (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   report_id UUID NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
 
@@ -141,10 +143,10 @@ CREATE TABLE IF NOT EXISTS report_evidence (
 );
 
 -- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_report_narratives_report_id ON report_narratives(report_id);
-CREATE INDEX IF NOT EXISTS idx_report_metrics_report_id ON report_metrics(report_id);
-CREATE INDEX IF NOT EXISTS idx_report_evidence_report_id ON report_evidence(report_id);
-CREATE INDEX IF NOT EXISTS idx_report_evidence_type ON report_evidence(evidence_type);
+CREATE INDEX IF NOT EXISTS idx_disclosure_narratives_report_id ON disclosure_narratives(report_id);
+CREATE INDEX IF NOT EXISTS idx_disclosure_metrics_report_id ON disclosure_metrics(report_id);
+CREATE INDEX IF NOT EXISTS idx_disclosure_evidence_report_id ON disclosure_evidence(report_id);
+CREATE INDEX IF NOT EXISTS idx_disclosure_evidence_type ON disclosure_evidence(evidence_type);
 
 -- Updated_at trigger function (reuse if exists)
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -156,25 +158,25 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers for updated_at
-DROP TRIGGER IF EXISTS update_report_narratives_updated_at ON report_narratives;
-CREATE TRIGGER update_report_narratives_updated_at
-  BEFORE UPDATE ON report_narratives
+DROP TRIGGER IF EXISTS update_disclosure_narratives_updated_at ON disclosure_narratives;
+CREATE TRIGGER update_disclosure_narratives_updated_at
+  BEFORE UPDATE ON disclosure_narratives
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
-DROP TRIGGER IF EXISTS update_report_metrics_updated_at ON report_metrics;
-CREATE TRIGGER update_report_metrics_updated_at
-  BEFORE UPDATE ON report_metrics
+DROP TRIGGER IF EXISTS update_disclosure_metrics_updated_at ON disclosure_metrics;
+CREATE TRIGGER update_disclosure_metrics_updated_at
+  BEFORE UPDATE ON disclosure_metrics
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
 -- RLS Policies (users can only access their company's reports)
 
--- report_narratives RLS
-ALTER TABLE report_narratives ENABLE ROW LEVEL SECURITY;
+-- disclosure_narratives RLS
+ALTER TABLE disclosure_narratives ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view their company's narratives"
-  ON report_narratives FOR SELECT
+  ON disclosure_narratives FOR SELECT
   USING (
     report_id IN (
       SELECT r.id FROM reports r
@@ -184,7 +186,7 @@ CREATE POLICY "Users can view their company's narratives"
   );
 
 CREATE POLICY "Users can insert their company's narratives"
-  ON report_narratives FOR INSERT
+  ON disclosure_narratives FOR INSERT
   WITH CHECK (
     report_id IN (
       SELECT r.id FROM reports r
@@ -194,7 +196,7 @@ CREATE POLICY "Users can insert their company's narratives"
   );
 
 CREATE POLICY "Users can update their company's narratives"
-  ON report_narratives FOR UPDATE
+  ON disclosure_narratives FOR UPDATE
   USING (
     report_id IN (
       SELECT r.id FROM reports r
@@ -203,11 +205,11 @@ CREATE POLICY "Users can update their company's narratives"
     )
   );
 
--- report_metrics RLS
-ALTER TABLE report_metrics ENABLE ROW LEVEL SECURITY;
+-- disclosure_metrics RLS
+ALTER TABLE disclosure_metrics ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view their company's metrics"
-  ON report_metrics FOR SELECT
+  ON disclosure_metrics FOR SELECT
   USING (
     report_id IN (
       SELECT r.id FROM reports r
@@ -217,7 +219,7 @@ CREATE POLICY "Users can view their company's metrics"
   );
 
 CREATE POLICY "Users can insert their company's metrics"
-  ON report_metrics FOR INSERT
+  ON disclosure_metrics FOR INSERT
   WITH CHECK (
     report_id IN (
       SELECT r.id FROM reports r
@@ -227,7 +229,7 @@ CREATE POLICY "Users can insert their company's metrics"
   );
 
 CREATE POLICY "Users can update their company's metrics"
-  ON report_metrics FOR UPDATE
+  ON disclosure_metrics FOR UPDATE
   USING (
     report_id IN (
       SELECT r.id FROM reports r
@@ -236,11 +238,11 @@ CREATE POLICY "Users can update their company's metrics"
     )
   );
 
--- report_evidence RLS
-ALTER TABLE report_evidence ENABLE ROW LEVEL SECURITY;
+-- disclosure_evidence RLS
+ALTER TABLE disclosure_evidence ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view their company's evidence"
-  ON report_evidence FOR SELECT
+  ON disclosure_evidence FOR SELECT
   USING (
     report_id IN (
       SELECT r.id FROM reports r
@@ -250,7 +252,7 @@ CREATE POLICY "Users can view their company's evidence"
   );
 
 CREATE POLICY "Users can insert their company's evidence"
-  ON report_evidence FOR INSERT
+  ON disclosure_evidence FOR INSERT
   WITH CHECK (
     report_id IN (
       SELECT r.id FROM reports r
@@ -260,7 +262,7 @@ CREATE POLICY "Users can insert their company's evidence"
   );
 
 CREATE POLICY "Users can delete their company's evidence"
-  ON report_evidence FOR DELETE
+  ON disclosure_evidence FOR DELETE
   USING (
     report_id IN (
       SELECT r.id FROM reports r
@@ -270,14 +272,14 @@ CREATE POLICY "Users can delete their company's evidence"
   );
 
 -- Grant service role full access (for backend worker)
-GRANT ALL ON report_narratives TO service_role;
-GRANT ALL ON report_metrics TO service_role;
-GRANT ALL ON report_evidence TO service_role;
+GRANT ALL ON disclosure_narratives TO service_role;
+GRANT ALL ON disclosure_metrics TO service_role;
+GRANT ALL ON disclosure_evidence TO service_role;
 
 -- Comments for documentation
-COMMENT ON TABLE report_narratives IS 'Qualitative ESG narratives: CEO message, strategy, pillars, case studies';
-COMMENT ON TABLE report_metrics IS 'Quantitative ESG metrics: emissions, energy, workforce, safety';
-COMMENT ON TABLE report_evidence IS 'Uploaded evidence files: photos, bills, documents';
-COMMENT ON COLUMN report_narratives.tone_of_voice IS 'Controls AI narrative style: professional, pragmatic, authentic, technical, visionary';
-COMMENT ON COLUMN report_narratives.materiality_ratings IS 'Double materiality assessment results';
-COMMENT ON COLUMN report_metrics.data_quality IS 'Indicates reliability: estimated, measured, verified, audited';
+COMMENT ON TABLE disclosure_narratives IS 'Qualitative ESG narratives: CEO message, strategy, pillars, case studies';
+COMMENT ON TABLE disclosure_metrics IS 'Quantitative ESG metrics: emissions, energy, workforce, safety';
+COMMENT ON TABLE disclosure_evidence IS 'Uploaded evidence files: photos, bills, documents';
+COMMENT ON COLUMN disclosure_narratives.tone_of_voice IS 'Controls AI narrative style: professional, pragmatic, authentic, technical, visionary';
+COMMENT ON COLUMN disclosure_narratives.materiality_ratings IS 'Double materiality assessment results';
+COMMENT ON COLUMN disclosure_metrics.data_quality IS 'Indicates reliability: estimated, measured, verified, audited';

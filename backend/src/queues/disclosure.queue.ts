@@ -59,20 +59,21 @@ const worker = new Worker(
 
       await job.updateProgress(20);
 
-      // 2. Fetch narratives
+      // 2. Fetch disclosure narratives (CEO message, pillars, strategy, etc.)
       const { data: narratives } = await supabase
-        .from('report_narratives')
+        .from('disclosure_narratives')
         .select('*')
         .eq('report_id', reportId)
         .single();
 
       await job.updateProgress(30);
 
-      // 3. Fetch metrics
+      // 3. Fetch disclosure metrics (emissions, energy, workforce, etc.)
       const { data: metrics } = await supabase
-        .from('metric_data')
+        .from('disclosure_metrics')
         .select('*')
-        .eq('report_id', reportId);
+        .eq('report_id', reportId)
+        .single();
 
       await job.updateProgress(40);
 
