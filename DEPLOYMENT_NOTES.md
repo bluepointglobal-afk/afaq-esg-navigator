@@ -27,24 +27,16 @@
 
 ## ⚠️ Manual Setup Required
 
-### Supabase Storage Bucket
+### Supabase Storage Bucket - RLS Policies
 
-The `evidence` storage bucket needs to be created manually. Execute this SQL in Supabase Dashboard (SQL Editor):
+✅ **Bucket Created:** The `evidence` bucket has been created successfully.
+
+⚠️ **RLS Policies Required:** Execute this SQL in Supabase Dashboard (SQL Editor) to add Row Level Security policies:
 
 ```sql
--- Create evidence bucket
-INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES (
-  'evidence',
-  'evidence',
-  true,
-  10485760,
-  ARRAY['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'application/pdf']
-)
-ON CONFLICT (id) DO NOTHING;
-
--- RLS Policies
-CREATE POLICY IF NOT EXISTS "Users can upload evidence for own company"
+-- RLS Policies for Evidence Storage
+DROP POLICY IF EXISTS "Users can upload evidence for own company" ON storage.objects;
+CREATE POLICY "Users can upload evidence for own company"
 ON storage.objects FOR INSERT
 TO authenticated
 WITH CHECK (
@@ -57,7 +49,8 @@ WITH CHECK (
   )
 );
 
-CREATE POLICY IF NOT EXISTS "Users can view evidence for own company"
+DROP POLICY IF EXISTS "Users can view evidence for own company" ON storage.objects;
+CREATE POLICY "Users can view evidence for own company"
 ON storage.objects FOR SELECT
 TO authenticated
 USING (
@@ -70,7 +63,8 @@ USING (
   )
 );
 
-CREATE POLICY IF NOT EXISTS "Users can delete own evidence"
+DROP POLICY IF EXISTS "Users can delete own evidence" ON storage.objects;
+CREATE POLICY "Users can delete own evidence"
 ON storage.objects FOR DELETE
 TO authenticated
 USING (
@@ -83,7 +77,8 @@ USING (
   )
 );
 
-CREATE POLICY IF NOT EXISTS "Service role full access to evidence"
+DROP POLICY IF EXISTS "Service role full access to evidence" ON storage.objects;
+CREATE POLICY "Service role full access to evidence"
 ON storage.objects FOR ALL
 TO service_role
 USING (bucket_id = 'evidence')
