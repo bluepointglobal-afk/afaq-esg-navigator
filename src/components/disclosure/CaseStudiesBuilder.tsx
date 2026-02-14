@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -6,17 +6,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
-import { Info, Plus, X, FileText, ListChecks, Upload } from 'lucide-react';
+import { Info, Plus, X, FileText, ListChecks, Upload, Loader2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useToast } from '@/hooks/use-toast';
+import { useUploadEvidence } from '@/hooks/use-evidence-upload';
 import type { CaseStudy, CaseStudyFormat } from '@/types/disclosure-data';
 
 interface CaseStudiesBuilderProps {
+  reportId: string;
   caseStudies: CaseStudy[];
   onCaseStudiesChange: (studies: CaseStudy[]) => void;
 }
 
-export function CaseStudiesBuilder({ caseStudies, onCaseStudiesChange }: CaseStudiesBuilderProps) {
+export function CaseStudiesBuilder({ reportId, caseStudies, onCaseStudiesChange }: CaseStudiesBuilderProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+  const fileInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
+  const { toast } = useToast();
+  const uploadEvidence = useUploadEvidence();
 
   const handleAddCaseStudy = () => {
     const newStudy: CaseStudy = {
@@ -40,6 +47,63 @@ export function CaseStudiesBuilder({ caseStudies, onCaseStudiesChange }: CaseStu
     onCaseStudiesChange(caseStudies.filter((_, i) => i !== index));
     if (expandedIndex === index) {
       setExpandedIndex(null);
+    }
+  };
+
+  const handleFileSelect = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: 'Invalid file type',
+        description: 'Please upload a JPEG, PNG, or WEBP image',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: 'File too large',
+        description: 'Please upload an image smaller than 10MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadingIndex(index);
+
+    try {
+      const result = await uploadEvidence.mutateAsync({
+        reportId,
+        file,
+        evidenceType: 'initiative_photo',
+        linkedCaseStudyIndex: index,
+      });
+
+      // Update case study with photo URL
+      handleUpdateCaseStudy(index, { photo_url: result.evidence.public_url });
+
+      toast({
+        title: 'Photo uploaded',
+        description: 'Your case study photo has been uploaded successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Upload failed',
+        description: error.message || 'Failed to upload photo',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingIndex(null);
+      // Reset file input
+      if (fileInputRefs.current[index]) {
+        fileInputRefs.current[index]!.value = '';
+      }
     }
   };
 
@@ -217,25 +281,53 @@ export function CaseStudiesBuilder({ caseStudies, onCaseStudiesChange }: CaseStu
                       </TooltipProvider>
                     </Label>
                     {study.photo_url ? (
-                      <div className="flex items-center gap-2">
-                        <Input
-                          value={study.photo_url}
-                          readOnly
-                          className="flex-1 text-xs"
-                        />
+                      <div className="space-y-2">
+                        <div className="border rounded-lg overflow-hidden">
+                          <img
+                            src={study.photo_url}
+                            alt="Case study"
+                            className="w-full h-48 object-cover"
+                          />
+                        </div>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => handleUpdateCaseStudy(index, { photo_url: '' })}
+                          className="w-full"
                         >
-                          Remove
+                          Remove Photo
                         </Button>
                       </div>
                     ) : (
-                      <Button variant="outline" size="sm" className="w-full">
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload Photo
-                      </Button>
+                      <>
+                        <input
+                          ref={(el) => (fileInputRefs.current[index] = el)}
+                          type="file"
+                          accept="image/jpeg,image/png,image/jpg,image/webp"
+                          onChange={(e) => handleFileSelect(index, e)}
+                          className="hidden"
+                          id={`photo-input-${index}`}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          disabled={uploadingIndex === index}
+                          onClick={() => fileInputRefs.current[index]?.click()}
+                        >
+                          {uploadingIndex === index ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Uploading...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="h-4 w-4 mr-2" />
+                              Upload Photo
+                            </>
+                          )}
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>

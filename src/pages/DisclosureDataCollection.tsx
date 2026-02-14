@@ -296,6 +296,7 @@ export default function DisclosureDataCollection() {
 
           <TabsContent value="cases" className="space-y-6">
             <CaseStudiesBuilder
+              reportId={reportId || ''}
               caseStudies={narratives.case_studies || []}
               onCaseStudiesChange={(studies) => setNarratives({ ...narratives, case_studies: studies })}
             />

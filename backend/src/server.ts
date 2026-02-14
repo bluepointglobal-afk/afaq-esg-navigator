@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import { logger } from './utils/logger';
 import disclosureRoutes from './routes/disclosure';
 import pdfRoutes from './routes/pdf';
+import evidenceRoutes from './routes/evidence';
 import healthRoutes from './routes/health';
 import { errorHandler } from './middleware/errorHandler';
 import { authenticate } from './middleware/auth';
@@ -64,6 +65,7 @@ app.use('/health', healthRoutes);
 // API routes (authenticated)
 app.use('/api/disclosure', authenticate, disclosureRoutes);
 app.use('/api/pdf', authenticate, pdfRoutes);
+app.use('/api/evidence', authenticate, evidenceRoutes);
 
 // Error handling
 app.use(errorHandler);
