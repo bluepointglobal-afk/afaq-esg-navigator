@@ -120,7 +120,7 @@ const worker = new Worker(
           generated_at: new Date().toISOString(),
           generated_by: userId,
           format: 'json',
-          listing_status: 'draft',
+          listing_status: 'non-listed',
           errors: null,
         })
         .select()
