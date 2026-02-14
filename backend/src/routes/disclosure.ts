@@ -11,11 +11,11 @@ const GenerateDisclosureSchema = z.object({
   reportId: z.string().uuid(),
   frameworks: z.array(z.string()).min(1),
   companyProfile: z.object({
-    id: z.string(),
-    name: z.string(),
-    industry: z.string(),
-    country: z.string(),
+    name: z.string().optional(),
+    industry: z.string().optional(),
+    jurisdiction: z.string().optional(),
   }),
+  language: z.enum(['en', 'ar']).optional(),
 });
 
 /**
