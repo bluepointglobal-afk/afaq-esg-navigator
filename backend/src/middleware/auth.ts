@@ -23,22 +23,15 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 
     const token = authHeader.split(' ')[1];
 
-    // Create Supabase client with user's JWT to verify it
-    // This validates the token and gets the user
-    const supabaseWithUserToken = createClient(
+    // Create Supabase client with ANON key (required to verify user JWTs)
+    // Service key is for admin operations, anon key verifies user tokens
+    const supabaseAnon = createClient(
       process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!,
-      {
-        global: {
-          headers: {
-            Authorization: authHeader
-          }
-        }
-      }
+      process.env.SUPABASE_ANON_KEY!
     );
 
-    // Get user from the token (validates JWT)
-    const { data: { user }, error } = await supabaseWithUserToken.auth.getUser();
+    // Verify JWT and get user
+    const { data: { user }, error } = await supabaseAnon.auth.getUser(token);
 
     if (error || !user) {
       console.error('Auth error:', error);

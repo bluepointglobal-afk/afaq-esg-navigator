@@ -42,6 +42,7 @@ router.get('/', async (req, res) => {
 router.get('/env-check', (req, res) => {
   res.json({
     SUPABASE_URL: !!process.env.SUPABASE_URL,
+    SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY,
     SUPABASE_SERVICE_KEY: !!process.env.SUPABASE_SERVICE_KEY,
     FRONTEND_URL: !!process.env.FRONTEND_URL,
     REDIS_URL: !!process.env.REDIS_URL,
