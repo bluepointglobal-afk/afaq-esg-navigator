@@ -382,7 +382,13 @@ export function useGenerateAndSaveDisclosure() {
       const aiResult = await generateDisclosure.mutateAsync(params);
       const isArabic = params.language === 'ar';
 
-      // 2. Map AI result to DisclosureOutput structure
+      // 2. Validate AI result
+      if (!aiResult || !Array.isArray(aiResult.sections)) {
+        console.error('Invalid AI result:', aiResult);
+        throw new Error('Backend returned invalid response format. Please try again.');
+      }
+
+      // 3. Map AI result to DisclosureOutput structure
       const disclosureOutput: Partial<DisclosureOutput> = {
         id: crypto.randomUUID(),
         reportId: params.reportId,
@@ -431,7 +437,7 @@ export function useGenerateAndSaveDisclosure() {
         updatedAt: new Date().toISOString()
       };
 
-      // 3. Save to database
+      // 4. Save to database
       await saveDisclosure.mutateAsync(disclosureOutput as DisclosureOutput);
 
       return disclosureOutput;
