@@ -176,7 +176,7 @@ export default function DisclosureDataCollection() {
       title: 'Data Collection Complete!',
       description: 'You can now generate your disclosure',
     });
-    navigate(`/disclosure/${reportId}`);
+    navigate(`/compliance/disclosure/${reportId}`);
   };
 
   const isLoading = narrativesLoading || metricsLoading;
