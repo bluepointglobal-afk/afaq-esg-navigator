@@ -120,13 +120,14 @@ export function useGenerateDisclosure() {
       language?: 'en' | 'ar';
       onProgress?: (progress: number) => void;
     }) => {
-      // Get current session token
+      // Refresh session to prevent timeout during long generation (90s)
       const {
         data: { session },
-      } = await supabase.auth.getSession();
+        error: sessionError,
+      } = await supabase.auth.refreshSession();
 
-      if (!session?.access_token) {
-        throw new Error('Authentication required');
+      if (sessionError || !session?.access_token) {
+        throw new Error('Authentication required. Please log in again.');
       }
 
       const backendUrl = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
