@@ -82,7 +82,7 @@ export function ExportPanel({ disclosure, isGenerating, isPdfGenerating, onDownl
                         <div className="flex flex-col md:flex-row gap-6">
                             <div className="flex-1 space-y-4">
                                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 italic text-sm text-slate-600 line-clamp-3">
-                                    "{disclosure.sections[0]?.narrative.substring(0, 300)}..."
+                                    "{disclosure.sections[0]?.narrative?.substring(0, 300) || 'No preview available'}..."
                                 </div>
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <li className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -180,7 +180,7 @@ export function ExportPanel({ disclosure, isGenerating, isPdfGenerating, onDownl
   "reportId": "${disclosure.reportId}",
   "generated_at": "${disclosure.generatedAt}",
   "sections_count": ${disclosure.sections.length},
-  "assessment_id": "${disclosure.assessmentId.substring(0, 18)}...",
+  "assessment_id": "${(disclosure.assessmentId || 'N/A').substring(0, 18)}...",
   "status": "Final",
   "hash": "sha256:7bc94...82e"
 }`}
@@ -209,7 +209,7 @@ export function ExportPanel({ disclosure, isGenerating, isPdfGenerating, onDownl
                     <span className="text-[10px] text-muted-foreground font-medium">Verified by AFAQ Governance Engine</span>
                 </div>
                 <div className="text-[10px] text-muted-foreground">
-                    FID: <span className="font-mono">{disclosure.id.substring(0, 8)}</span>
+                    FID: <span className="font-mono">{(disclosure.id || 'N/A').substring(0, 8)}</span>
                 </div>
             </div>
         </Card>

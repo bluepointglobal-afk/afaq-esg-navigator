@@ -81,7 +81,7 @@ export default function PaymentSuccess() {
 
           {sessionId && (
             <p className="text-xs text-center text-muted-foreground">
-              Transaction ID: {sessionId.substring(0, 20)}...
+              Transaction ID: {(sessionId || '').substring(0, 20)}...
             </p>
           )}
         </CardContent>
