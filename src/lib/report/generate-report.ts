@@ -89,10 +89,10 @@ function mapDisclosureToReportSection(
     // Find matching disclosure sections
     const matchingSections = disclosure.sections.filter((s) => {
         if (sectionType === 'environmental') {
-            return s.pillar === 'esg' || s.title.toLowerCase().includes('environment');
+            return s.pillar === 'esg' || s.title?.toLowerCase().includes('environment');
         }
         if (sectionType === 'social') {
-            return s.title.toLowerCase().includes('social') || s.title.toLowerCase().includes('employee');
+            return s.title?.toLowerCase().includes('social') || s.title?.toLowerCase().includes('employee');
         }
         if (sectionType === 'governance') {
             return s.pillar === 'governance' || s.pillar === 'risk_controls' || s.pillar === 'transparency';
@@ -107,7 +107,7 @@ function mapDisclosureToReportSection(
     // Extract metrics
     const metrics: ReportMetric[] = matchingSections.flatMap((s) =>
         (s.dataPoints || []).map((dp) => ({
-            code: `${s.pillar.toUpperCase()}-${Math.random().toString(36).substr(2, 4)}`,
+            code: `${(s.pillar || 'UNK').toUpperCase()}-${Math.random().toString(36).substr(2, 4)}`,
             name: dp.label,
             value: dp.value,
             source: dp.source,
@@ -118,7 +118,7 @@ function mapDisclosureToReportSection(
     const disclosures: ReportDisclosure[] = matchingSections.map((s, idx) => ({
         id: `disc-${sectionType}-${idx}`,
         framework: disclosure.jurisdiction === 'UAE' ? 'ADX' : disclosure.jurisdiction === 'KSA' ? 'Tadawul' : 'QSE',
-        code: `${sectionType.toUpperCase().substring(0, 3)}-${idx + 1}`,
+        code: `${(sectionType || 'UNK').toUpperCase().substring(0, 3)}-${idx + 1}`,
         title: s.title,
         status: 'addressed' as const,
         reference: `Section ${sectionType}`,
@@ -186,7 +186,7 @@ function generateDataAnnex(
         (section.dataPoints || []).forEach((dp) => {
             rows.push({
                 category: formatPillarName(section.pillar),
-                metricCode: `${section.pillar.toUpperCase()}-${rows.length + 1}`,
+                metricCode: `${(section.pillar || 'UNK').toUpperCase()}-${rows.length + 1}`,
                 metricName: dp.label,
                 value: dp.value,
                 reportSection: section.title,
@@ -225,7 +225,7 @@ export function generateSustainabilityReport(input: GenerateReportInput): Sustai
         title: 'Executive Summary',
         narrative: generateExecutiveSummary(assessment, companyName),
         metrics: assessment.pillarScores.map((ps) => ({
-            code: ps.pillar.toUpperCase(),
+            code: (ps.pillar || 'UNK').toUpperCase(),
             name: `${formatPillarName(ps.pillar)} Score`,
             value: ps.score,
             unit: '%',

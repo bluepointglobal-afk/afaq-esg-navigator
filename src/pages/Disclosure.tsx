@@ -328,7 +328,7 @@ export default function Disclosure() {
 
     toast({
       title: 'Export Successful',
-      description: `${format.toUpperCase()} file has been downloaded.`,
+      description: `${format?.toUpperCase() || 'File'} has been downloaded.`,
     });
   };
 
