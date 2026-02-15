@@ -34,7 +34,7 @@ function generateExplanation(
     const pillarName =
       pillarScore.pillar === 'risk_controls'
         ? 'Risk & Controls'
-        : pillarScore.pillar.charAt(0).toUpperCase() + pillarScore.pillar.slice(1);
+        : pillarScore.pillar ? pillarScore.pillar.charAt(0).toUpperCase() + pillarScore.pillar.slice(1) : 'Unknown';
 
     if (pillarScore.score >= 80) {
       strengths.push(`Strong performance in ${pillarName} (${pillarScore.score}/100)`);

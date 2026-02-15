@@ -191,7 +191,7 @@ export default function Dashboard() {
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <span className="text-sm font-semibold text-primary">
-                      {company.name.charAt(0).toUpperCase()}
+                      {company.name ? company.name.charAt(0).toUpperCase() : 'C'}
                     </span>
                   </div>
                 </Button>

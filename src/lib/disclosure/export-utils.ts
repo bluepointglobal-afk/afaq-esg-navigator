@@ -43,7 +43,7 @@ export function renderDisclosureToHtml(disclosure: DisclosureOutput, language: '
 
   const disclaimerHtml = disclosure.disclaimers
     .sort((a, b) => a.order - b.order)
-    .map(d => `<p class="disclaimer"><strong>${d.type.toUpperCase()}:</strong> ${isRtl ? d.textArabic || d.text : d.text}</p>`)
+    .map(d => `<p class="disclaimer"><strong>${(d.type || 'notice').toUpperCase()}:</strong> ${isRtl ? d.textArabic || d.text : d.text}</p>`)
     .join('');
 
   const html = `
@@ -194,7 +194,7 @@ export function renderEvidenceAppendixToHtml(
     <div style="margin-top: 20px;">
         ${Object.keys(narratives).map(key => `
             <div style="margin-bottom: 20px; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px;">
-                <div style="font-weight: bold; margin-bottom: 5px; color: #64748b; font-size: 12px;">SOURCE: ${key.toUpperCase()}</div>
+                <div style="font-weight: bold; margin-bottom: 5px; color: #64748b; font-size: 12px;">SOURCE: ${(key || 'unknown').toUpperCase()}</div>
                 <div style="font-size: 14px;">${narratives[key]}</div>
             </div>
         `).join('')}

@@ -8,7 +8,7 @@ import type { Jurisdiction } from '@/types/compliance';
  * Handles both short codes (UAE, KSA, Qatar) and full names
  */
 export function mapCountryToJurisdiction(country: string): Jurisdiction {
-  const normalized = country.toUpperCase().trim();
+  const normalized = (country || '').toUpperCase().trim();
   
   // Handle exact matches first
   if (normalized === 'UAE') return 'UAE';

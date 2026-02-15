@@ -93,7 +93,7 @@ export function GapsList({ gaps, gapCount, criticalGapCount }: GapsListProps) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <Badge variant={getSeverityBadgeVariant(gap.severity)}>
-                        {gap.severity.toUpperCase()}
+                        {gap.severity?.toUpperCase() || 'UNKNOWN'}
                       </Badge>
                       <Badge variant="outline">{getReasonLabel(gap.reason)}</Badge>
                       <span className="text-xs text-muted-foreground">

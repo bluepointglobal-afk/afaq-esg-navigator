@@ -106,7 +106,7 @@ export function FrameworkMappingTable() {
             {/* Question */}
             <div className="flex items-start gap-3 mb-3">
               <Badge variant="outline" className={PILLAR_COLORS[mapping.pillar]}>
-                {mapping.pillar.charAt(0).toUpperCase() + mapping.pillar.slice(1)}
+                {mapping.pillar ? mapping.pillar.charAt(0).toUpperCase() + mapping.pillar.slice(1) : 'Unknown'}
               </Badge>
               <div className="flex-1">
                 <p className="font-medium text-sm">{mapping.questionText}</p>

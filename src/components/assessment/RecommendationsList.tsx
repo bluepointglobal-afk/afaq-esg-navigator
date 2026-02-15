@@ -22,7 +22,7 @@ export function RecommendationsList({ recommendations }: RecommendationsListProp
     };
     return (
       <Badge variant="outline" className={colors[effort as keyof typeof colors]}>
-        {effort.charAt(0).toUpperCase() + effort.slice(1)} Effort
+        {effort ? effort.charAt(0).toUpperCase() + effort.slice(1) : 'Unknown'} Effort
       </Badge>
     );
   };
@@ -35,7 +35,7 @@ export function RecommendationsList({ recommendations }: RecommendationsListProp
     };
     return (
       <Badge variant="outline" className={colors[impact as keyof typeof colors]}>
-        {impact.charAt(0).toUpperCase() + impact.slice(1)} Impact
+        {impact ? impact.charAt(0).toUpperCase() + impact.slice(1) : 'Unknown'} Impact
       </Badge>
     );
   };
