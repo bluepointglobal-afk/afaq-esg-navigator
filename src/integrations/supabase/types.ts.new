@@ -1,0 +1,1109 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
+  public: {
+    Tables: {
+      assessment_results: {
+        Row: {
+          assessed_at: string
+          created_at: string
+          critical_gap_count: number
+          explanation: Json
+          gap_count: number
+          gaps: Json
+          id: string
+          overall_score: number
+          pillar_scores: Json
+          questionnaire_response_id: string
+          recommendations: Json
+          report_id: string
+          updated_at: string
+        }
+        Insert: {
+          assessed_at?: string
+          created_at?: string
+          critical_gap_count?: number
+          explanation?: Json
+          gap_count?: number
+          gaps?: Json
+          id?: string
+          overall_score: number
+          pillar_scores?: Json
+          questionnaire_response_id: string
+          recommendations?: Json
+          report_id: string
+          updated_at?: string
+        }
+        Update: {
+          assessed_at?: string
+          created_at?: string
+          critical_gap_count?: number
+          explanation?: Json
+          gap_count?: number
+          gaps?: Json
+          id?: string
+          overall_score?: number
+          pillar_scores?: Json
+          questionnaire_response_id?: string
+          recommendations?: Json
+          report_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_results_questionnaire_response_id_fkey"
+            columns: ["questionnaire_response_id"]
+            isOneToOne: false
+            referencedRelation: "questionnaire_responses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_results_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          annual_revenue: number | null
+          country: string
+          created_at: string
+          employee_count: number | null
+          fiscal_year_end: number
+          id: string
+          industry: string
+          industry_subsector: string | null
+          is_listed: boolean
+          logo_url: string | null
+          name: string
+          name_arabic: string | null
+          primary_color: string | null
+          revenue_currency: string
+          stock_exchange: string | null
+          updated_at: string
+        }
+        Insert: {
+          annual_revenue?: number | null
+          country: string
+          created_at?: string
+          employee_count?: number | null
+          fiscal_year_end?: number
+          id?: string
+          industry: string
+          industry_subsector?: string | null
+          is_listed?: boolean
+          logo_url?: string | null
+          name: string
+          name_arabic?: string | null
+          primary_color?: string | null
+          revenue_currency?: string
+          stock_exchange?: string | null
+          updated_at?: string
+        }
+        Update: {
+          annual_revenue?: number | null
+          country?: string
+          created_at?: string
+          employee_count?: number | null
+          fiscal_year_end?: number
+          id?: string
+          industry?: string
+          industry_subsector?: string | null
+          is_listed?: boolean
+          logo_url?: string | null
+          name?: string
+          name_arabic?: string | null
+          primary_color?: string | null
+          revenue_currency?: string
+          stock_exchange?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      disclosure_evidence: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          evidence_type: string | null
+          extracted_data: Json | null
+          extraction_status: string | null
+          file_name: string
+          file_size_bytes: number | null
+          file_type: string | null
+          id: string
+          linked_case_study_index: number | null
+          linked_metric_type: string | null
+          mime_type: string | null
+          report_id: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          evidence_type?: string | null
+          extracted_data?: Json | null
+          extraction_status?: string | null
+          file_name: string
+          file_size_bytes?: number | null
+          file_type?: string | null
+          id?: string
+          linked_case_study_index?: number | null
+          linked_metric_type?: string | null
+          mime_type?: string | null
+          report_id: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          evidence_type?: string | null
+          extracted_data?: Json | null
+          extraction_status?: string | null
+          file_name?: string
+          file_size_bytes?: number | null
+          file_type?: string | null
+          id?: string
+          linked_case_study_index?: number | null
+          linked_metric_type?: string | null
+          mime_type?: string | null
+          report_id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disclosure_evidence_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disclosure_evidence_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disclosure_metrics: {
+        Row: {
+          baseline_year: number | null
+          created_at: string | null
+          data_quality: string | null
+          employee_turnover_percent: number | null
+          fatalities: number | null
+          id: string
+          local_suppliers_percent: number | null
+          lost_time_injuries: number | null
+          notes: string | null
+          percent_women: number | null
+          percent_women_leadership: number | null
+          renewable_energy_percent: number | null
+          report_id: string
+          reporting_period_end: string | null
+          reporting_period_start: string | null
+          safety_training_hours: number | null
+          scope1_tonnes_co2e: number | null
+          scope2_tonnes_co2e: number | null
+          scope3_calculated: boolean | null
+          scope3_tonnes_co2e: number | null
+          suppliers_assessed_esg: number | null
+          total_employees: number | null
+          total_energy_kwh: number | null
+          total_waste_tonnes: number | null
+          training_hours_per_employee: number | null
+          updated_at: string | null
+          waste_recycled_percent: number | null
+          water_consumption_m3: number | null
+        }
+        Insert: {
+          baseline_year?: number | null
+          created_at?: string | null
+          data_quality?: string | null
+          employee_turnover_percent?: number | null
+          fatalities?: number | null
+          id?: string
+          local_suppliers_percent?: number | null
+          lost_time_injuries?: number | null
+          notes?: string | null
+          percent_women?: number | null
+          percent_women_leadership?: number | null
+          renewable_energy_percent?: number | null
+          report_id: string
+          reporting_period_end?: string | null
+          reporting_period_start?: string | null
+          safety_training_hours?: number | null
+          scope1_tonnes_co2e?: number | null
+          scope2_tonnes_co2e?: number | null
+          scope3_calculated?: boolean | null
+          scope3_tonnes_co2e?: number | null
+          suppliers_assessed_esg?: number | null
+          total_employees?: number | null
+          total_energy_kwh?: number | null
+          total_waste_tonnes?: number | null
+          training_hours_per_employee?: number | null
+          updated_at?: string | null
+          waste_recycled_percent?: number | null
+          water_consumption_m3?: number | null
+        }
+        Update: {
+          baseline_year?: number | null
+          created_at?: string | null
+          data_quality?: string | null
+          employee_turnover_percent?: number | null
+          fatalities?: number | null
+          id?: string
+          local_suppliers_percent?: number | null
+          lost_time_injuries?: number | null
+          notes?: string | null
+          percent_women?: number | null
+          percent_women_leadership?: number | null
+          renewable_energy_percent?: number | null
+          report_id?: string
+          reporting_period_end?: string | null
+          reporting_period_start?: string | null
+          safety_training_hours?: number | null
+          scope1_tonnes_co2e?: number | null
+          scope2_tonnes_co2e?: number | null
+          scope3_calculated?: boolean | null
+          scope3_tonnes_co2e?: number | null
+          suppliers_assessed_esg?: number | null
+          total_employees?: number | null
+          total_energy_kwh?: number | null
+          total_waste_tonnes?: number | null
+          training_hours_per_employee?: number | null
+          updated_at?: string | null
+          waste_recycled_percent?: number | null
+          water_consumption_m3?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disclosure_metrics_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: true
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disclosure_narratives: {
+        Row: {
+          case_studies: Json | null
+          ceo_message_content: string | null
+          ceo_message_format: string | null
+          climate_strategy: Json | null
+          completeness_score: number | null
+          created_at: string | null
+          esg_oversight: string | null
+          esg_pillars: Json | null
+          esg_strategy_oneliner: string | null
+          has_formal_targets: boolean | null
+          id: string
+          materiality_analysis: string | null
+          materiality_ratings: Json | null
+          phase_completed: number | null
+          policies: Json | null
+          report_id: string
+          risk_management: string | null
+          stakeholder_engagement: string | null
+          targets: Json | null
+          tone_of_voice: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          case_studies?: Json | null
+          ceo_message_content?: string | null
+          ceo_message_format?: string | null
+          climate_strategy?: Json | null
+          completeness_score?: number | null
+          created_at?: string | null
+          esg_oversight?: string | null
+          esg_pillars?: Json | null
+          esg_strategy_oneliner?: string | null
+          has_formal_targets?: boolean | null
+          id?: string
+          materiality_analysis?: string | null
+          materiality_ratings?: Json | null
+          phase_completed?: number | null
+          policies?: Json | null
+          report_id: string
+          risk_management?: string | null
+          stakeholder_engagement?: string | null
+          targets?: Json | null
+          tone_of_voice?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          case_studies?: Json | null
+          ceo_message_content?: string | null
+          ceo_message_format?: string | null
+          climate_strategy?: Json | null
+          completeness_score?: number | null
+          created_at?: string | null
+          esg_oversight?: string | null
+          esg_pillars?: Json | null
+          esg_strategy_oneliner?: string | null
+          has_formal_targets?: boolean | null
+          id?: string
+          materiality_analysis?: string | null
+          materiality_ratings?: Json | null
+          phase_completed?: number | null
+          policies?: Json | null
+          report_id?: string
+          risk_management?: string | null
+          stakeholder_engagement?: string | null
+          targets?: Json | null
+          tone_of_voice?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disclosure_narratives_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: true
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disclosure_outputs: {
+        Row: {
+          assessment_id: string
+          created_at: string
+          disclaimers: Json
+          errors: Json | null
+          evidence_appendix: Json
+          format: string
+          generated_at: string
+          generated_by: string | null
+          generated_for_company: string
+          id: string
+          jurisdiction: string
+          listing_status: string | null
+          quality_checklist: Json | null
+          report_id: string
+          sections: Json
+          status: string | null
+          template_id: string | null
+          template_version: string | null
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          assessment_id: string
+          created_at?: string
+          disclaimers?: Json
+          errors?: Json | null
+          evidence_appendix?: Json
+          format?: string
+          generated_at?: string
+          generated_by?: string | null
+          generated_for_company: string
+          id?: string
+          jurisdiction: string
+          listing_status?: string | null
+          quality_checklist?: Json | null
+          report_id: string
+          sections?: Json
+          status?: string | null
+          template_id?: string | null
+          template_version?: string | null
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          assessment_id?: string
+          created_at?: string
+          disclaimers?: Json
+          errors?: Json | null
+          evidence_appendix?: Json
+          format?: string
+          generated_at?: string
+          generated_by?: string | null
+          generated_for_company?: string
+          id?: string
+          jurisdiction?: string
+          listing_status?: string | null
+          quality_checklist?: Json | null
+          report_id?: string
+          sections?: Json
+          status?: string | null
+          template_id?: string | null
+          template_version?: string | null
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disclosure_outputs_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disclosure_outputs_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidence_audit_log: {
+        Row: {
+          action: string
+          changes: Json | null
+          evidence_id: string | null
+          id: string
+          performed_by: string | null
+          timestamp: string | null
+        }
+        Insert: {
+          action: string
+          changes?: Json | null
+          evidence_id?: string | null
+          id?: string
+          performed_by?: string | null
+          timestamp?: string | null
+        }
+        Update: {
+          action?: string
+          changes?: Json | null
+          evidence_id?: string | null
+          id?: string
+          performed_by?: string | null
+          timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_audit_log_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_register"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidence_register: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          question_id: string
+          report_id: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          uploaded_by: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          question_id: string
+          report_id: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          uploaded_by?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          question_id?: string
+          report_id?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          uploaded_by?: string | null
+          verification_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_register_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      m2m_credentials: {
+        Row: {
+          claude_oauth_token: string | null
+          github_token: string | null
+          id: string
+          kimi_api_key: string | null
+          perplexity_api_key: string | null
+          telegram_bot_token: string | null
+          telegram_chat_id: string | null
+          updated_at: string | null
+          vercel_token: string | null
+        }
+        Insert: {
+          claude_oauth_token?: string | null
+          github_token?: string | null
+          id?: string
+          kimi_api_key?: string | null
+          perplexity_api_key?: string | null
+          telegram_bot_token?: string | null
+          telegram_chat_id?: string | null
+          updated_at?: string | null
+          vercel_token?: string | null
+        }
+        Update: {
+          claude_oauth_token?: string | null
+          github_token?: string | null
+          id?: string
+          kimi_api_key?: string | null
+          perplexity_api_key?: string | null
+          telegram_bot_token?: string | null
+          telegram_chat_id?: string | null
+          updated_at?: string | null
+          vercel_token?: string | null
+        }
+        Relationships: []
+      }
+      m2m_phase_log: {
+        Row: {
+          created_at: string | null
+          error: string | null
+          evidence_url: string | null
+          id: string
+          output: string | null
+          phase: number
+          project_id: string | null
+          status: string
+          step: string
+        }
+        Insert: {
+          created_at?: string | null
+          error?: string | null
+          evidence_url?: string | null
+          id?: string
+          output?: string | null
+          phase: number
+          project_id?: string | null
+          status: string
+          step: string
+        }
+        Update: {
+          created_at?: string | null
+          error?: string | null
+          evidence_url?: string | null
+          id?: string
+          output?: string | null
+          phase?: number
+          project_id?: string | null
+          status?: string
+          step?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "m2m_phase_log_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "m2m_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      m2m_projects: {
+        Row: {
+          created_at: string | null
+          current_phase: number | null
+          golden_path: Json | null
+          id: string
+          name: string
+          phase_status: string | null
+          production_url: string | null
+          repo: string
+          slug: string
+          supabase_anon_key: string | null
+          supabase_service_key: string | null
+          supabase_url: string | null
+          updated_at: string | null
+          vercel_project_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_phase?: number | null
+          golden_path?: Json | null
+          id?: string
+          name: string
+          phase_status?: string | null
+          production_url?: string | null
+          repo: string
+          slug: string
+          supabase_anon_key?: string | null
+          supabase_service_key?: string | null
+          supabase_url?: string | null
+          updated_at?: string | null
+          vercel_project_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_phase?: number | null
+          golden_path?: Json | null
+          id?: string
+          name?: string
+          phase_status?: string | null
+          production_url?: string | null
+          repo?: string
+          slug?: string
+          supabase_anon_key?: string | null
+          supabase_service_key?: string | null
+          supabase_url?: string | null
+          updated_at?: string | null
+          vercel_project_id?: string | null
+        }
+        Relationships: []
+      }
+      metric_data: {
+        Row: {
+          calculation_inputs: Json | null
+          calculation_method: string | null
+          category: string
+          confidence_level: string | null
+          created_at: string
+          data_source: string | null
+          data_tier: number | null
+          emission_factor_source: string | null
+          emission_factor_used: number | null
+          entered_by: string | null
+          id: string
+          metric_code: string
+          notes: string | null
+          report_id: string
+          supporting_doc_url: string | null
+          unit: string | null
+          updated_at: string
+          value_boolean: boolean | null
+          value_numeric: number | null
+          value_text: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          calculation_inputs?: Json | null
+          calculation_method?: string | null
+          category: string
+          confidence_level?: string | null
+          created_at?: string
+          data_source?: string | null
+          data_tier?: number | null
+          emission_factor_source?: string | null
+          emission_factor_used?: number | null
+          entered_by?: string | null
+          id?: string
+          metric_code: string
+          notes?: string | null
+          report_id: string
+          supporting_doc_url?: string | null
+          unit?: string | null
+          updated_at?: string
+          value_boolean?: boolean | null
+          value_numeric?: number | null
+          value_text?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          calculation_inputs?: Json | null
+          calculation_method?: string | null
+          category?: string
+          confidence_level?: string | null
+          created_at?: string
+          data_source?: string | null
+          data_tier?: number | null
+          emission_factor_source?: string | null
+          emission_factor_used?: number | null
+          entered_by?: string | null
+          id?: string
+          metric_code?: string
+          notes?: string | null
+          report_id?: string
+          supporting_doc_url?: string | null
+          unit?: string | null
+          updated_at?: string
+          value_boolean?: boolean | null
+          value_numeric?: number | null
+          value_text?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metric_data_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questionnaire_responses: {
+        Row: {
+          answers: Json
+          completed_at: string | null
+          created_at: string
+          id: string
+          report_id: string
+          template_id: string
+          template_version: string
+          updated_at: string
+        }
+        Insert: {
+          answers?: Json
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          report_id: string
+          template_id: string
+          template_version: string
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          report_id?: string
+          template_id?: string
+          template_version?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questionnaire_responses_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "questionnaire_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questionnaire_templates: {
+        Row: {
+          created_at: string
+          id: string
+          jurisdiction: string
+          sections: Json
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          jurisdiction: string
+          sections?: Json
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          jurisdiction?: string
+          sections?: Json
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      report_narratives: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          esg_text: string | null
+          gov_text: string | null
+          report_id: string
+          risk_text: string | null
+          transparency_text: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          esg_text?: string | null
+          gov_text?: string | null
+          report_id: string
+          risk_text?: string | null
+          transparency_text?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          esg_text?: string | null
+          gov_text?: string | null
+          report_id?: string
+          risk_text?: string | null
+          transparency_text?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_narratives_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: true
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          overall_completion_pct: number | null
+          reporting_year: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          overall_completion_pct?: number | null
+          reporting_year: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          overall_completion_pct?: number | null
+          reporting_year?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          role: string
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          role?: string
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          role?: string
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      get_company_id: { Args: { user_id: string }; Returns: string }
+      get_user_company_id: { Args: never; Returns: string }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

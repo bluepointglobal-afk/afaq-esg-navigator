@@ -14,7 +14,7 @@ import { useDisclosureOutput, useGenerateAndSaveDisclosure } from '@/hooks/use-d
 import { useAssessmentResult } from '@/hooks/use-assessment-results';
 import { useQuestionnaireResponse } from '@/hooks/use-questionnaire-response';
 import { useUserProfile } from '@/hooks/use-user-profile';
-import { useReportNarrative } from '@/hooks/use-report-narratives';
+import { useDisclosureNarratives } from '@/hooks/use-disclosure-narratives';
 import { useMetricData } from '@/hooks/use-metric-data';
 import { buildDisclosurePack } from '@/lib/disclosure/orchestrator';
 import { ExportPanel, type ExportFormat } from '@/components/disclosure/ExportPanel';
@@ -60,7 +60,7 @@ export default function Disclosure() {
   const { data: existingDisclosure, isLoading: disclosureLoading } = useDisclosureOutput(reportId!);
   const { data: assessmentResult } = useAssessmentResult(reportId!);
   const { data: questionnaireResponse } = useQuestionnaireResponse(reportId!);
-  const { data: narrative } = useReportNarrative(reportId!);
+  const { data: disclosureNarratives } = useDisclosureNarratives(reportId!);
   const { data: metrics } = useMetricData(reportId!);
   const { generateAndSave } = useGenerateAndSaveDisclosure();
 
@@ -102,6 +102,16 @@ export default function Disclosure() {
       return;
     }
 
+    if (!disclosureNarratives || !disclosureNarratives.ceo_message_content) {
+      toast({
+        title: 'Missing Disclosure Data',
+        description: 'Please complete Step 2: Data Collection (CEO message, metrics, case studies) before generating.',
+        variant: 'destructive',
+      });
+      navigate(`/disclosure/data/${reportId}`);
+      return;
+    }
+
     setIsGenerating(true);
     setGenerationProgress(0);
 
@@ -130,13 +140,8 @@ export default function Disclosure() {
       };
 
       // Build Disclosure Pack
-      // Convert ReportNarrative to NarrativeInput (Record<string, unknown>)
-      const narrativeInput = narrative ? {
-        governanceText: narrative.governanceText,
-        esgText: narrative.esgText,
-        riskText: narrative.riskText,
-        transparencyText: narrative.transparencyText,
-      } : null;
+      // Pass the full disclosure narratives object (contains CEO message, case studies, etc.)
+      const narrativeInput = disclosureNarratives || null;
 
       // Convert hook MetricData to compliance MetricData format
       const metricsForDisclosure = (metrics || []).map(m => ({
@@ -489,8 +494,41 @@ export default function Disclosure() {
                     </div>
                   </div>
 
+                  {/* Warning if data collection is incomplete */}
+                  {(!disclosureNarratives || !disclosureNarratives.ceo_message_content) && (
+                    <Card className="border-orange-200 bg-orange-50 p-6">
+                      <div className="flex items-start gap-4">
+                        <AlertCircle className="w-6 h-6 text-orange-600 flex-shrink-0 mt-1" />
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-orange-900 mb-2">Data Collection Required</h3>
+                          <p className="text-sm text-orange-800 mb-4">
+                            Before generating your disclosure, please complete <strong>Step 2: Data Collection</strong> to add:
+                          </p>
+                          <ul className="text-sm text-orange-800 mb-4 space-y-1 list-disc list-inside">
+                            <li>CEO/Leadership Message</li>
+                            <li>ESG Strategy & Materiality</li>
+                            <li>Case Studies & Impact Stories</li>
+                            <li>Quantitative Metrics (emissions, workforce, etc.)</li>
+                          </ul>
+                          <Button
+                            onClick={() => navigate(`/disclosure/data/${reportId}`)}
+                            className="bg-orange-600 hover:bg-orange-700"
+                          >
+                            <BarChart3 className="w-4 h-4 mr-2" />
+                            Go to Data Collection
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  )}
+
                   <div className="space-y-4">
-                    <Button onClick={handleGenerate} disabled={isGenerating} size="lg" className="w-full px-12 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all">
+                    <Button
+                      onClick={handleGenerate}
+                      disabled={isGenerating || !disclosureNarratives || !disclosureNarratives.ceo_message_content}
+                      size="lg"
+                      className="w-full px-12 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                       {isGenerating ? (
                         <>
                           <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
