@@ -127,15 +127,35 @@ None - all features complete and ready for testing!
 
 ## Recent Fixes (Feb 14, 2026 - Evening)
 
-### Fixed: Foreign Key Constraint Error in Questionnaire
-**Problem**: Users were getting "Key is not present in table 'reports'" error when accessing questionnaire pages.
+### Fixed: DEMO MODE causing 409 Conflicts and Foreign Key Errors
+**Problem**: Users getting "409 Conflict" when creating reports, and "Key is not present in table 'reports'" errors.
 
-**Root Cause**: Questionnaire.tsx was attempting to create reports but not checking if the creation succeeded. If report creation failed silently (due to RLS policy or other reasons), it would then try to create a questionnaire_response with a non-existent report_id, causing a foreign key violation.
+**Root Cause**: The app was running in DEMO MODE:
+- `useCreateReport()` generated random UUIDs but never saved them to database
+- Dashboard navigated to `/compliance/questionnaire/${randomUUID}`
+- Questionnaire tried to create the report in database
+- On refresh: 409 Conflict (report now exists) and RLS issues
 
-**Solution**: Added comprehensive error handling to:
+**Solution**:
+- ✅ Disabled DEMO MODE in `use-reports.ts`
+- ✅ Enabled real Supabase database operations
+- ✅ Reports now properly created with auto-generated IDs
+- ✅ Dashboard fetches actual reports from database
+- ✅ Added error handling in Questionnaire.tsx for edge cases
+
+**Impact**:
+- Reports persist across sessions
+- No more 409 Conflict errors
+- Users can see their existing reports
+- Proper company-level isolation via RLS
+
+### Fixed: Foreign Key Constraint Error Handling
+**Problem**: Cryptic database errors when questionnaire initialization failed.
+
+**Solution**: Added comprehensive error handling in Questionnaire.tsx:
 - Check for errors when querying existing reports
 - Check for errors when creating new reports
 - Stop execution and show clear error messages if any step fails
 - Added debug logging to track report creation flow
 
-**Verification**: After Vercel deployment completes, users will see clear error toasts if report creation fails, instead of cryptic foreign key errors. Check browser console for "Creating report:" and "Report created successfully" logs.
+**Verification**: Users now see clear error toasts instead of cryptic foreign key errors.
