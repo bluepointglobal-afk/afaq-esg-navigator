@@ -127,7 +127,7 @@ export function useUpdateDisclosureMetrics() {
 
       const { data, error } = await supabase
         .from('disclosure_metrics')
-        .upsert(dbData)
+        .upsert(dbData, { onConflict: 'report_id' })
         .select()
         .single();
 

@@ -106,7 +106,7 @@ export function useUpdateDisclosureNarratives() {
 
       const { data, error } = await supabase
         .from('disclosure_narratives')
-        .upsert(dbData)
+        .upsert(dbData, { onConflict: 'report_id' })
         .select()
         .single();
 
