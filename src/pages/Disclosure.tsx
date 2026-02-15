@@ -511,20 +511,43 @@ export default function Disclosure() {
                   </div>
                 </Card>
               ) : (
-                <Tabs value={activeView} onValueChange={(v) => setActiveView(v as 'disclosure' | 'report')} className="space-y-6">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="disclosure" className="flex items-center gap-2">
-                      <ClipboardList className="w-4 h-4" />
-                      Disclosure View
-                    </TabsTrigger>
-                    <TabsTrigger value="report" className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4" />
-                      Full Report
-                    </TabsTrigger>
-                  </TabsList>
+                <>
+                  {/* Loading State */}
+                  {disclosureLoading && (
+                    <Card className="p-8 text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Loading disclosure...</p>
+                    </Card>
+                  )}
 
-                  {/* Disclosure View Tab */}
-                  <TabsContent value="disclosure" className="space-y-8 animate-in fade-in duration-500">
+                  {/* Error State */}
+                  {!disclosureLoading && !existingDisclosure && (
+                    <Card className="p-8 text-center border-destructive">
+                      <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">Disclosure Not Found</h3>
+                      <p className="text-muted-foreground mb-4">
+                        The disclosure could not be loaded. Please try generating it again.
+                      </p>
+                      <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+                    </Card>
+                  )}
+
+                  {/* Valid Disclosure */}
+                  {!disclosureLoading && existingDisclosure && (
+                    <Tabs value={activeView} onValueChange={(v) => setActiveView(v as 'disclosure' | 'report')} className="space-y-6">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="disclosure" className="flex items-center gap-2">
+                          <ClipboardList className="w-4 h-4" />
+                          Disclosure View
+                        </TabsTrigger>
+                        <TabsTrigger value="report" className="flex items-center gap-2">
+                          <BookOpen className="w-4 h-4" />
+                          Full Report
+                        </TabsTrigger>
+                      </TabsList>
+
+                      {/* Disclosure View Tab */}
+                      <TabsContent value="disclosure" className="space-y-8 animate-in fade-in duration-500">
                     {/* Export Panel - NEW T-017/T-020 */}
                     <ExportPanel
                       disclosure={existingDisclosure}
@@ -565,22 +588,24 @@ export default function Disclosure() {
                     )}
 
                     {/* Sections */}
-                    {existingDisclosure.sections.map((section) => (
-                      <Card key={section.id} className="p-6">
-                        <h3 className="text-xl font-semibold mb-4">
-                          {languageView === 'en' ? section.title : section.titleArabic}
-                        </h3>
-                        <div
-                          className={`prose max-w-none mb-4 ${languageView === 'ar' ? 'text-right' : ''}`}
-                          style={languageView === 'ar' ? { direction: 'rtl' } : {}}
-                        >
-                          <p className="whitespace-pre-wrap">
-                            {languageView === 'en' ? section.narrative : section.narrativeArabic}
-                          </p>
-                        </div>
+                    {Array.isArray(existingDisclosure?.sections) && existingDisclosure.sections.length > 0 ? (
+                      existingDisclosure.sections.map((section) => (
+                        section?.id && section?.title ? (
+                          <Card key={section.id} className="p-6">
+                            <h3 className="text-xl font-semibold mb-4">
+                              {languageView === 'en' ? (section.title || 'Untitled') : (section.titleArabic || section.title || 'Untitled')}
+                            </h3>
+                            <div
+                              className={`prose max-w-none mb-4 ${languageView === 'ar' ? 'text-right' : ''}`}
+                              style={languageView === 'ar' ? { direction: 'rtl' } : {}}
+                            >
+                              <p className="whitespace-pre-wrap">
+                                {languageView === 'en' ? (section.narrative || 'No content available') : (section.narrativeArabic || section.narrative || 'No content available')}
+                              </p>
+                            </div>
 
-                        {/* Data Points */}
-                        {section.dataPoints && section.dataPoints.length > 0 && (
+                            {/* Data Points */}
+                            {Array.isArray(section?.dataPoints) && section.dataPoints.length > 0 && (
                           <div className="mt-4 border-t pt-4">
                             <h4 className="font-medium text-sm mb-2">Key Data Points</h4>
                             <div className="grid grid-cols-2 gap-2">
@@ -596,38 +621,50 @@ export default function Disclosure() {
                           </div>
                         )}
 
-                        {/* Citation Placeholders */}
-                        {section.citationPlaceholders && section.citationPlaceholders.length > 0 && (
-                          <div className="mt-4 border-t pt-4 bg-yellow-50 p-3 rounded">
-                            <h4 className="font-medium text-sm mb-2 text-yellow-800">
-                              ⚠️ Citations Require Verification
-                            </h4>
-                            <ul className="text-xs text-yellow-700 space-y-1">
-                              {section.citationPlaceholders.map((cit, idx) => (
-                                <li key={idx}>{cit}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                            {/* Citation Placeholders */}
+                            {Array.isArray(section?.citationPlaceholders) && section.citationPlaceholders.length > 0 && (
+                              <div className="mt-4 border-t pt-4 bg-yellow-50 p-3 rounded">
+                                <h4 className="font-medium text-sm mb-2 text-yellow-800">
+                                  ⚠️ Citations Require Verification
+                                </h4>
+                                <ul className="text-xs text-yellow-700 space-y-1">
+                                  {section.citationPlaceholders.map((cit, idx) => (
+                                    <li key={idx}>{cit}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </Card>
+                        ) : null
+                      ))
+                    ) : (
+                      <Card className="p-8 text-center">
+                        <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold mb-2">No Sections Found</h3>
+                        <p className="text-muted-foreground">
+                          The disclosure was generated but contains no content sections.
+                        </p>
                       </Card>
-                    ))}
+                    )}
 
                     {/* Disclaimers */}
-                    <Card className="p-6 bg-gray-50">
-                      <h3 className="font-semibold mb-4">Disclaimers</h3>
-                      <div className="space-y-3">
-                        {existingDisclosure.disclaimers.map((disclaimer, idx) => (
-                          <div key={idx} className="text-sm">
-                            <div className="font-medium text-xs uppercase text-muted-foreground mb-1">
-                              {disclaimer.type}
+                    {Array.isArray(existingDisclosure?.disclaimers) && existingDisclosure.disclaimers.length > 0 && (
+                      <Card className="p-6 bg-gray-50">
+                        <h3 className="font-semibold mb-4">Disclaimers</h3>
+                        <div className="space-y-3">
+                          {existingDisclosure.disclaimers.map((disclaimer, idx) => (
+                            <div key={idx} className="text-sm">
+                              <div className="font-medium text-xs uppercase text-muted-foreground mb-1">
+                                {disclaimer?.type || 'General'}
+                              </div>
+                              <p className={languageView === 'ar' ? 'text-right' : ''}>
+                                {languageView === 'en' ? (disclaimer?.text || '') : (disclaimer?.textArabic || disclaimer?.text || '')}
+                              </p>
                             </div>
-                            <p className={languageView === 'ar' ? 'text-right' : ''}>
-                              {languageView === 'en' ? disclaimer.text : disclaimer.textArabic}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
+                          ))}
+                        </div>
+                      </Card>
+                    )}
                   </TabsContent>
 
                   {/* Full Report Tab */}
@@ -713,7 +750,9 @@ export default function Disclosure() {
                       </Card>
                     )}
                   </TabsContent>
-                </Tabs>
+                    </Tabs>
+                  )}
+                </>
               )}
             </>
           )}
