@@ -369,7 +369,7 @@ export function useDeleteDisclosure() {
  */
 export function useGenerateAndSaveDisclosure() {
   const generateDisclosure = useGenerateDisclosure();
-  const saveDisclosure = useSaveDisclosure();
+  const queryClient = useQueryClient();
 
   return {
     generateAndSave: async (params: {
@@ -378,71 +378,26 @@ export function useGenerateAndSaveDisclosure() {
       language?: 'en' | 'ar';
       onProgress?: (progress: number) => void;
     }) => {
-      // 1. Generate via Railway backend (with progress tracking)
-      const aiResult = await generateDisclosure.mutateAsync(params);
-      const isArabic = params.language === 'ar';
+      // 1. Generate via Railway backend (backend saves to database)
+      const result = await generateDisclosure.mutateAsync(params);
 
-      // 2. Validate AI result
-      if (!aiResult || !Array.isArray(aiResult.sections)) {
-        console.error('Invalid AI result:', aiResult);
+      // 2. Validate result
+      if (!result || !result.success || !result.disclosureId) {
+        console.error('Invalid backend result:', result);
         throw new Error('Backend returned invalid response format. Please try again.');
       }
 
-      // 3. Map AI result to DisclosureOutput structure
-      const disclosureOutput: Partial<DisclosureOutput> = {
-        id: crypto.randomUUID(),
-        reportId: params.reportId,
-        assessmentId: params.disclosurePack.assessment?.id || '00000000-0000-0000-0000-000000000000',
-        jurisdiction: params.disclosurePack.companyProfile?.jurisdiction || 'UAE',
-        generatedForCompany: params.disclosurePack.companyProfile?.companyName || 'Unknown',
-        sections: aiResult.sections.map((s: AiGeneratedSection, idx: number) => ({
-          id: s.id,
-          pillar: s.id as 'governance' | 'esg' | 'risk' | 'metrics',
-          title: isArabic ? s.title : s.title,
-          titleArabic: isArabic ? s.title : undefined,
-          order: idx,
-          narrative: isArabic ? s.narrative : s.narrative,
-          narrativeArabic: isArabic ? s.narrative : undefined,
-          dataPoints: (s.dataPoints || []).map((dp: AiGeneratedDataPoint) => ({
-            label: dp.label,
-            labelArabic: isArabic ? dp.label : undefined,
-            value: dp.value,
-            source: 'calculated'
-          })),
-          missingInformation: s.limitations || []
-        })),
-        evidenceAppendix: [],
-        disclaimers: [
-          {
-            type: 'methodology',
-            text: 'Generated based on company-provided evidence and framework requirements.',
-            textArabic: 'تم الإنشاء بناءً على الأدلة المقدمة من الشركة ومتطلبات الإطار.',
-            order: 0
-          }
-        ],
-        qualityChecklist: [
-          {
-            category: 'completeness',
-            label: 'Framework Coverage',
-            labelArabic: 'تغطية المعايير',
-            status: (params.disclosurePack.assessment?.gaps?.length || 0) === 0 ? 'pass' : 'warning',
-            count: params.disclosurePack.assessment?.gaps?.length || 0
-          }
-        ],
-        generatedAt: new Date().toISOString(),
-        generatedBy: (await supabase.auth.getUser()).data.user?.id || null,
-        format: 'json',
-        status: 'draft',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+      // 3. Invalidate queries to fetch fresh disclosure from database
+      queryClient.invalidateQueries({
+        queryKey: ['disclosure-output', params.reportId],
+      });
+
+      return {
+        id: result.disclosureId,
+        reportId: result.reportId,
       };
-
-      // 4. Save to database
-      await saveDisclosure.mutateAsync(disclosureOutput as DisclosureOutput);
-
-      return disclosureOutput;
     },
-    isLoading: generateDisclosure.isPending || saveDisclosure.isPending,
-    error: generateDisclosure.error || saveDisclosure.error,
+    isLoading: generateDisclosure.isPending,
+    error: generateDisclosure.error,
   };
 }
