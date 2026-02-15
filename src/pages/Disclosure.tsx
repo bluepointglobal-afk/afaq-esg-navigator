@@ -556,7 +556,7 @@ export default function Disclosure() {
                                     : 'bg-red-100 text-red-700'
                                   }`}
                               >
-                                {item.status.toUpperCase()}
+                                {item.status?.toUpperCase() || 'N/A'}
                               </div>
                             </div>
                           ))}
