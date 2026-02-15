@@ -52,9 +52,35 @@ const worker = new Worker(
         logger.error('Failed to fetch questionnaire response', {
           reportId,
           error: qError,
+          code: qError?.code,
+          message: qError?.message,
+          hint: qError?.hint,
           hasData: !!questionnaireResponse,
         });
-        throw new Error(`Questionnaire response not found: ${qError?.message || 'No data returned'}`);
+
+        // Check for specific error types
+        if (qError?.code === '42501') {
+          throw new Error('Permission denied: RLS policy blocking questionnaire access. User may not have access to this report.');
+        }
+
+        if (qError?.code === 'PGRST116') {
+          throw new Error('Questionnaire response not found for this report. User must complete the questionnaire first.');
+        }
+
+        if (qError) {
+          throw new Error(`Database error (${qError.code}): ${qError.message}`);
+        }
+
+        throw new Error('Questionnaire response not found: No data returned from database');
+      }
+
+      // Validate questionnaire structure
+      if (!questionnaireResponse.answers || typeof questionnaireResponse.answers !== 'object') {
+        logger.error('Invalid questionnaire response structure', {
+          reportId,
+          response: questionnaireResponse
+        });
+        throw new Error('Questionnaire response has invalid structure: missing or invalid answers object');
       }
 
       await job.updateProgress(20);
@@ -128,8 +154,29 @@ const worker = new Worker(
         .single();
 
       if (saveError) {
-        logger.error('Failed to save disclosure', { saveError, reportId });
-        throw new Error(`Failed to save disclosure: ${saveError.message}`);
+        logger.error('Failed to save disclosure', {
+          error: saveError,
+          code: saveError.code,
+          message: saveError.message,
+          hint: saveError.hint,
+          details: saveError.details,
+          reportId
+        });
+
+        // Check for specific error types
+        if (saveError.code === '42501') {
+          throw new Error('Permission denied: RLS policy blocking disclosure save. Check user_profiles and RLS policies.');
+        }
+
+        if (saveError.code === '23505') {
+          throw new Error('Disclosure already exists for this report. Delete the existing disclosure first.');
+        }
+
+        if (saveError.code === '23503') {
+          throw new Error(`Foreign key violation: ${saveError.message}. Check that report and assessment exist.`);
+        }
+
+        throw new Error(`Database error (${saveError.code}): ${saveError.message}`);
       }
 
       await job.updateProgress(100);

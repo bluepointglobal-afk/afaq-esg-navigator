@@ -38,35 +38,62 @@ export async function generateDisclosureContent(params: GenerateDisclosureParams
   const prompt = buildDisclosurePrompt(params);
 
   // Call OpenRouter API (Claude model)
-  const response = await axios.post(
-    'https://openrouter.ai/api/v1/chat/completions',
-    {
-      model: 'anthropic/claude-3.5-sonnet',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert ESG disclosure specialist. Generate professional, audit-ready ESG disclosures compliant with international frameworks.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.3, // Lower for consistency
-      max_tokens: 8000,
-    },
-    {
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': process.env.FRONTEND_URL,
-        'X-Title': 'AFAQ ESG Navigator',
+  let response;
+  try {
+    response = await axios.post(
+      'https://openrouter.ai/api/v1/chat/completions',
+      {
+        model: 'anthropic/claude-3.5-sonnet',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert ESG disclosure specialist. Generate professional, audit-ready ESG disclosures compliant with international frameworks.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.3, // Lower for consistency
+        max_tokens: 8000,
       },
-      timeout: 90000, // 90 second timeout (plenty of time)
-    }
-  );
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': process.env.FRONTEND_URL,
+          'X-Title': 'AFAQ ESG Navigator',
+        },
+        timeout: 90000, // 90 second timeout (plenty of time)
+      }
+    );
+  } catch (error: any) {
+    logger.error('OpenRouter API call failed', {
+      error: error.message,
+      status: error.response?.status,
+      data: error.response?.data
+    });
+    throw new Error(`AI API call failed: ${error.message}`);
+  }
 
-  const aiContent = response.data.choices[0].message.content;
+  // Validate API response structure
+  if (!response.data) {
+    logger.error('OpenRouter returned no data', { response });
+    throw new Error('AI API returned empty response');
+  }
+
+  if (!response.data.choices || !Array.isArray(response.data.choices) || response.data.choices.length === 0) {
+    logger.error('OpenRouter returned no choices', { data: response.data });
+    throw new Error('AI API returned invalid response format');
+  }
+
+  const firstChoice = response.data.choices[0];
+  if (!firstChoice?.message?.content) {
+    logger.error('OpenRouter choice missing content', { choice: firstChoice });
+    throw new Error('AI API returned empty content');
+  }
+
+  const aiContent = firstChoice.message.content;
 
   // Parse AI response into structured disclosure
   const disclosure = parseDisclosureResponse(aiContent, companyProfile, frameworks);
@@ -186,17 +213,50 @@ Format as JSON: { sections: [{ id, title, narrative, dataPoints: [] }], evidence
 
 function parseDisclosureResponse(aiContent: string, companyProfile: any, frameworks: string[]): any {
   // Parse AI-generated JSON response
+  let parsed;
   try {
-    const parsed = JSON.parse(aiContent);
-    return {
-      template_id: null,
-      template_version: '2.0',
-      jurisdiction: companyProfile.country,
-      generated_for_company: companyProfile.name,
-      selected_frameworks: frameworks,
-      sections: parsed.sections || [],
-      evidence_appendix: [],
-      disclaimers: [
+    parsed = JSON.parse(aiContent);
+  } catch (error: any) {
+    logger.error('Failed to parse AI response as JSON', {
+      error: error.message,
+      content: aiContent.substring(0, 500) // Log first 500 chars for debugging
+    });
+    throw new Error('AI returned non-JSON response');
+  }
+
+  // Validate structure
+  if (!parsed || typeof parsed !== 'object') {
+    logger.error('AI response is not an object', { parsed });
+    throw new Error('AI response has invalid structure');
+  }
+
+  if (!Array.isArray(parsed.sections)) {
+    logger.error('AI response missing sections array', { parsed });
+    throw new Error('AI response missing sections array');
+  }
+
+  if (parsed.sections.length === 0) {
+    logger.warn('AI returned empty sections array', { parsed });
+  }
+
+  // Validate each section has required fields
+  const validSections = parsed.sections.filter((s: any) => {
+    if (!s.id || !s.title || !s.narrative) {
+      logger.warn('Section missing required fields', { section: s });
+      return false;
+    }
+    return true;
+  });
+
+  return {
+    template_id: null,
+    template_version: '2.0',
+    jurisdiction: companyProfile.country,
+    generated_for_company: companyProfile.name,
+    selected_frameworks: frameworks,
+    sections: validSections,
+    evidence_appendix: [],
+    disclaimers: [
         {
           id: 'disc-1',
           type: 'educational',
