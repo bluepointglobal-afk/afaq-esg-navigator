@@ -123,7 +123,7 @@ export function generateExcelFilename(
   companyName: string,
   year: string | number
 ): string {
-  const sanitizedName = companyName
+  const sanitizedName = (companyName || 'company')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');

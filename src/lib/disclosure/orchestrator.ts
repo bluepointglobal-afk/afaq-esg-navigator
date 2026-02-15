@@ -57,7 +57,7 @@ export function buildDisclosurePack(params: {
     outline.forEach(section => {
         section.items.forEach(req => {
             req.requiredEvidence.forEach(type => {
-                if (type === 'narrative' && !narrativeTexts[`${req.topic.toLowerCase()}Text`]) {
+                if (type === 'narrative' && !narrativeTexts[`${(req.topic || '').toLowerCase()}Text`]) {
                     missingEvidenceCount++;
                 }
                 if (type === 'metric' && !metrics?.some(m => m.metricCode === req.id || m.metricCode === req.title)) {
