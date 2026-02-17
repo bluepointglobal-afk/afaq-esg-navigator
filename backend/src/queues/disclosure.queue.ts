@@ -86,20 +86,33 @@ const worker = new Worker(
       await job.updateProgress(20);
 
       // 2. Fetch disclosure narratives (CEO message, pillars, strategy, etc.)
-      const { data: narratives } = await supabase
+      const { data: narratives, error: narrativesError } = await supabase
         .from('disclosure_narratives')
         .select('*')
         .eq('report_id', reportId)
-        .single();
+        .maybeSingle();
+
+      if (narrativesError) {
+        logger.error('Failed to fetch disclosure narratives', { error: narrativesError, reportId });
+      }
+
+      if (!narratives) {
+        logger.warn('No disclosure narratives found for report', { reportId });
+        throw new Error('Disclosure narratives not found. Please complete Step 2: Data Collection first.');
+      }
 
       await job.updateProgress(30);
 
       // 3. Fetch disclosure metrics (emissions, energy, workforce, etc.)
-      const { data: metrics } = await supabase
+      const { data: metrics, error: metricsError } = await supabase
         .from('disclosure_metrics')
         .select('*')
         .eq('report_id', reportId)
-        .single();
+        .maybeSingle();
+
+      if (metricsError) {
+        logger.error('Failed to fetch disclosure metrics', { error: metricsError, reportId });
+      }
 
       await job.updateProgress(40);
 
@@ -129,9 +142,10 @@ const worker = new Worker(
       await job.updateProgress(80);
 
       // 6. Save to database (map to actual schema columns)
+      // Use upsert to allow regeneration - updates existing disclosure for same report_id
       const { data: savedDisclosure, error: saveError } = await supabase
         .from('disclosure_outputs')
-        .insert({
+        .upsert({
           report_id: reportId,
           assessment_id: assessment?.id || null,
           template_id: null,
@@ -149,7 +163,7 @@ const worker = new Worker(
           format: 'json',
           listing_status: 'non-listed',
           errors: null,
-        })
+        }, { onConflict: 'report_id' })
         .select()
         .single();
 

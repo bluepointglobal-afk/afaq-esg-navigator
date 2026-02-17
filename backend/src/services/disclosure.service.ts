@@ -47,15 +47,28 @@ export async function generateDisclosureContent(params: GenerateDisclosureParams
         messages: [
           {
             role: 'system',
-            content: 'You are an expert ESG disclosure specialist. Generate professional, audit-ready ESG disclosures compliant with international frameworks.'
+            content: `You are a senior ESG disclosure consultant from a Big 4 advisory firm with 15+ years experience. Your writing combines:
+- Deep technical expertise in ESG frameworks (IFRS S1/S2, GRI, TCFD, SASB, CDP)
+- Strategic business acumen and value creation narratives
+- Sophisticated stakeholder communication (investors, regulators, rating agencies)
+- Audit-ready rigor with clear methodology and data lineage
+- Industry-specific insights and peer benchmarking context
+
+You craft disclosures that:
+1. Transform raw user input into polished, professional narratives worthy of annual reports
+2. Weave quantitative metrics seamlessly into qualitative storytelling
+3. Demonstrate strategic linkage between ESG and business value
+4. Anticipate and address stakeholder questions proactively
+5. Balance authenticity with professional polish - never generic or templated
+6. Acknowledge data gaps transparently without undermining credibility`
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.3, // Lower for consistency
-        max_tokens: 8000,
+        temperature: 0.4, // Slightly higher for more sophisticated output
+        max_tokens: 16000, // Doubled for Big 4-level depth
       },
       {
         headers: {
@@ -145,14 +158,23 @@ function buildDisclosurePrompt(params: GenerateDisclosureParams): string {
       ).join('\n\n')
     : 'Not provided';
 
-  return `Generate a professional ESG disclosure report using the following data.
+  return `Generate a comprehensive, Big 4-quality ESG disclosure report that transforms the raw data below into a strategic, investor-grade narrative.
 
-IMPORTANT TONE GUIDANCE: Use "${toneOfVoice}" tone throughout:
-- professional: Big 4 audit style - Formal, structured, compliance-focused
-- pragmatic: Investor-friendly - Business case, ROI, strategic value
-- authentic: Humanized & approachable - Natural language, honest, relatable
-- technical: Data-driven - Detailed metrics, methodologies, specifications
-- visionary: Inspiring & ambitious - Forward-looking, transformational, bold
+CRITICAL QUALITY STANDARDS:
+✓ Each section should be 400-800 words of substantive content (not generic filler)
+✓ Integrate ALL provided case studies, metrics, and targets naturally into narratives
+✓ Demonstrate strategic linkage between ESG performance and business outcomes
+✓ Use industry-specific terminology and context where relevant
+✓ Include forward-looking commitments alongside historical performance
+✓ Acknowledge data gaps transparently (e.g., "Scope 3 emissions tracking is in development")
+✓ Maintain ${toneOfVoice} tone throughout
+
+TONE GUIDANCE - "${toneOfVoice}":
+- professional: Big 4 consulting style - Sophisticated, structured, stakeholder-ready, rigorous
+- pragmatic: Investor-oriented - Business case emphasis, ROI linkage, strategic value creation
+- authentic: Approachable yet credible - Natural language, honest progress narrative, relatable
+- technical: Data-centric - Detailed methodologies, metrics transparency, scientific precision
+- visionary: Transformational - Bold ambition, leadership positioning, future-focused
 
 COMPANY PROFILE:
 Name: ${companyProfile.name}
@@ -190,25 +212,95 @@ Governance: ${assessment?.governance_score || 'N/A'}
 Environmental: ${assessment?.environmental_score || 'N/A'}
 Social: ${assessment?.social_score || 'N/A'}
 
-TASK:
-Generate a comprehensive ESG disclosure report with these sections:
-1. Executive Summary (including CEO message expanded to 200-300 words)
-2. Materiality & Strategy (materiality analysis + strategy + pillars)
-3. Environmental Performance (metrics, targets, case studies)
-4. Social Performance (metrics, targets, case studies)
-5. Governance & Risk (governance structure, risk management)
-6. Targets & Future Commitments
-7. Gap Analysis & Recommendations
+GENERATION TASK:
 
-For each section:
-- Expand user's casual input into professional ${toneOfVoice} prose
-- Integrate metrics and case studies naturally
-- Highlight material topics from the assessment
-- Be specific and data-driven where metrics exist
-- Be honest about data gaps (don't fabricate)
-- Keep the authentic voice - avoid AI blatancy and corporate jargon
+Create a comprehensive ESG disclosure with these sections (400-800 words each).
 
-Format as JSON: { sections: [{ id, title, narrative, dataPoints: [] }], evidence_appendix: [], disclaimers: [], quality_checklist: [] }`;
+IMPORTANT: Each section MUST include a "pillar" field mapping to: "governance", "environmental", "social", or "esg"
+
+1. **Executive Summary** (id: "executive-summary", pillar: "governance")
+   - Open with expanded CEO/leadership message (transform bullet points into flowing 300-word narrative)
+   - Overall ESG maturity assessment and key achievements
+   - Strategic priorities and material topics
+   - Forward commitments and stakeholder value proposition
+
+2. **Materiality & Strategic Context** (id: "materiality-strategy", pillar: "esg")
+   - Double materiality analysis: business impact + societal impact
+   - Strategic ESG pillars with rationale and action plans
+   - Stakeholder engagement approach
+   - Integration with business strategy and value creation
+
+3. **Environmental Performance** (id: "environmental", pillar: "environmental")
+   - GHG emissions (Scope 1, 2, 3 if available) with context and trends
+   - Energy and resource management initiatives
+   - Climate risks and adaptation measures
+   - Environmental case studies woven into narrative (Challenge-Action-Impact)
+   - Targets with baseline, progress, and accountability mechanisms
+
+4. **Social Responsibility** (id: "social", pillar: "social")
+   - Workforce demographics, diversity, and inclusion metrics
+   - Employee wellbeing, development, and engagement
+   - Community impact and stakeholder relationships
+   - Social case studies integrated naturally
+   - Labor practices, health & safety performance
+
+5. **Governance & Ethics** (id: "governance", pillar: "governance")
+   - Board oversight of ESG matters
+   - Risk management and compliance frameworks
+   - Ethics, anti-corruption, and transparency policies
+   - Stakeholder grievance mechanisms
+
+6. **Targets & Future Commitments** (id: "targets", pillar: "esg")
+   - Science-based or aspirational targets by pillar
+   - Roadmap and interim milestones
+   - Accountability structure and progress tracking
+   - Dependencies and enabling conditions
+
+7. **Methodology & Data Limitations** (id: "methodology", pillar: "governance")
+   - Data collection approach and verification
+   - Reporting boundaries and exclusions
+   - Estimation methodologies where actual data unavailable
+   - Planned improvements to data quality
+
+INTEGRATION REQUIREMENTS:
+✓ CEO message MUST be prominently featured in Executive Summary (not as standalone section)
+✓ ALL case studies MUST be woven into relevant pillars (Environmental/Social/Governance), not listed separately
+✓ Targets MUST include baseline, current status, and accountability owner
+✓ Materiality ratings MUST inform which topics get deeper treatment
+✓ Metrics MUST be contextualized (industry benchmarks, year-over-year trends, strategic relevance)
+✓ Data gaps MUST be acknowledged with remediation plans
+
+OUTPUT FORMAT REQUIREMENTS:
+Return valid JSON matching this exact structure:
+{
+  "sections": [
+    {
+      "id": "executive-summary",
+      "title": "Executive Summary",
+      "pillar": "governance",
+      "narrative": "400-800 word paragraph incorporating CEO message...",
+      "dataPoints": [
+        { "label": "Overall ESG Score", "value": "${assessment?.overall_score}%" },
+        { "label": "Material Topics Identified", "value": "X topics" }
+      ]
+    }
+  ],
+  "evidence_appendix": [],
+  "disclaimers": [
+    {
+      "id": "disc-1",
+      "type": "assurance",
+      "text": "This disclosure is unaudited. [Company] is developing external assurance processes for future reporting periods."
+    }
+  ],
+  "quality_checklist": [
+    { "item": "CEO message integrated", "status": "pass", "count": 1 },
+    { "item": "Case studies referenced", "status": "pass", "count": ${caseStudies.length} },
+    { "item": "Quantitative metrics included", "status": ${metrics?.length > 0 ? '"pass"' : '"warning"'}, "count": ${metrics?.length || 0} }
+  ]
+}
+
+CRITICAL: Do NOT fabricate metrics. If a metric isn't provided, describe the topic qualitatively or state "data collection in progress."`;
 }
 
 function parseDisclosureResponse(aiContent: string, companyProfile: any, frameworks: string[]): any {
