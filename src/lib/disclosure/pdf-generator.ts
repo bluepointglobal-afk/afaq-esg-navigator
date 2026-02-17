@@ -37,21 +37,39 @@ export async function generatePdf(html: string, options: PdfOptions): Promise<vo
       scale: 2,
       useCORS: true,
       letterRendering: true,
-      logging: false,
+      logging: true, // Enable logging to debug white page
+      allowTaint: true, // Allow cross-origin images
+      backgroundColor: '#ffffff', // Ensure white background
+      windowWidth: 1024, // Force viewport width
+      windowHeight: 768,
     },
     jsPDF: {
       unit: 'mm',
       format: 'a4',
       orientation: 'portrait' as const,
+      compress: true,
     },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
   };
 
   try {
+    // Wait a moment for any dynamic content to render
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Generate PDF
     await html2pdf().set(pdfOptions).from(container).save();
+  } catch (error) {
+    console.error('PDF generation failed:', error);
+    // Clean up before throwing
+    if (document.body.contains(container)) {
+      document.body.removeChild(container);
+    }
+    throw new Error('PDF generation failed. Please try exporting to HTML and use browser Print to PDF instead.');
   } finally {
     // Clean up the temporary container
-    document.body.removeChild(container);
+    if (document.body.contains(container)) {
+      document.body.removeChild(container);
+    }
   }
 }
 
