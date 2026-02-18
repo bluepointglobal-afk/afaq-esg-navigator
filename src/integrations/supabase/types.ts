@@ -245,14 +245,21 @@ export type Database = {
           id: string
           report_id: string
           assessment_id: string
+          template_id: string | null
           version: string
+          template_version: string | null
           jurisdiction: string
           generated_for_company: string
           sections: Json
           evidence_appendix: Json
-          quality_score: number | null
-          quality_explanation: string | null
+          disclaimers: Json
+          quality_checklist: Json | null
+          listing_status: string | null
           status: string
+          generated_at: string
+          generated_by: string | null
+          format: string
+          errors: Json | null
           created_at: string
           updated_at: string
         }
@@ -260,14 +267,21 @@ export type Database = {
           id?: string
           report_id: string
           assessment_id: string
+          template_id?: string | null
           version?: string
+          template_version?: string | null
           jurisdiction?: string
           generated_for_company: string
           sections?: Json
           evidence_appendix?: Json
-          quality_score?: number | null
-          quality_explanation?: string | null
+          disclaimers?: Json
+          quality_checklist?: Json | null
+          listing_status?: string | null
           status?: string
+          generated_at?: string
+          generated_by?: string | null
+          format?: string
+          errors?: Json | null
           created_at?: string
           updated_at?: string
         }
@@ -275,14 +289,21 @@ export type Database = {
           id?: string
           report_id?: string
           assessment_id?: string
+          template_id?: string | null
           version?: string
+          template_version?: string | null
           jurisdiction?: string
           generated_for_company?: string
           sections?: Json
           evidence_appendix?: Json
-          quality_score?: number | null
-          quality_explanation?: string | null
+          disclaimers?: Json
+          quality_checklist?: Json | null
+          listing_status?: string | null
           status?: string
+          generated_at?: string
+          generated_by?: string | null
+          format?: string
+          errors?: Json | null
           created_at?: string
           updated_at?: string
         }

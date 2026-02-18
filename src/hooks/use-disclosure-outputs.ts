@@ -75,7 +75,50 @@ export function useDisclosureOutput(reportId: string) {
         console.error('Error fetching disclosure output:', error);
         throw error;
       }
-      return data as unknown as DisclosureOutput | null;
+
+      if (!data) return null;
+
+      // CRITICAL FIX: Parse JSONB fields if they come back as strings
+      // Supabase usually auto-parses JSONB, but in some cases it may return strings
+      const parsed: any = { ...data };
+
+      if (typeof parsed.sections === 'string') {
+        try {
+          parsed.sections = JSON.parse(parsed.sections);
+        } catch (e) {
+          console.error('Failed to parse sections JSON:', e);
+          parsed.sections = [];
+        }
+      }
+
+      if (typeof parsed.evidence_appendix === 'string') {
+        try {
+          parsed.evidence_appendix = JSON.parse(parsed.evidence_appendix);
+        } catch (e) {
+          console.error('Failed to parse evidence_appendix JSON:', e);
+          parsed.evidence_appendix = [];
+        }
+      }
+
+      if (typeof parsed.disclaimers === 'string') {
+        try {
+          parsed.disclaimers = JSON.parse(parsed.disclaimers);
+        } catch (e) {
+          console.error('Failed to parse disclaimers JSON:', e);
+          parsed.disclaimers = [];
+        }
+      }
+
+      if (typeof parsed.quality_checklist === 'string') {
+        try {
+          parsed.quality_checklist = JSON.parse(parsed.quality_checklist);
+        } catch (e) {
+          console.error('Failed to parse quality_checklist JSON:', e);
+          parsed.quality_checklist = [];
+        }
+      }
+
+      return parsed as DisclosureOutput | null;
     },
     enabled: !!reportId,
     retry: (failureCount, error) => {
