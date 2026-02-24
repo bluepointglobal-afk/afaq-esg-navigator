@@ -15,16 +15,19 @@ interface DbDisclosureOutput {
   assessment_id: string;
   template_id: string | null;
   version: string;
+  template_version: string | null;
   jurisdiction: string;
+  listing_status: string | null;
   generated_for_company: string;
-  sections: DisclosureSection[];
-  evidence_appendix: EvidenceReference[];
-  disclaimers: Disclaimer[];
-  quality_checklist: QualityChecklistItem[];
+  sections: any; // JSONB - may be array or string
+  evidence_appendix: any; // JSONB - may be array or string
+  disclaimers: any; // JSONB - may be array or string
+  quality_checklist: any; // JSONB - may be array or string
   status: string;
   generated_at: string;
   generated_by: string | null;
   format: string;
+  errors: any; // JSONB - may be array or string
   created_at: string;
   updated_at: string;
 }
@@ -40,6 +43,54 @@ interface AiGeneratedSection {
   narrative: string;
   dataPoints?: AiGeneratedDataPoint[];
   limitations?: string[];
+}
+
+/**
+ * Helper: Parse JSONB field that may come back as string
+ */
+function parseJsonField(field: any, fieldName: string, defaultValue: any = []): any {
+  if (typeof field === 'string') {
+    try {
+      return JSON.parse(field);
+    } catch (e) {
+      console.error(`Failed to parse ${fieldName} JSON:`, e);
+      return defaultValue;
+    }
+  }
+  return field || defaultValue;
+}
+
+/**
+ * Helper: Map database row (snake_case) to DisclosureOutput (camelCase)
+ */
+function mapDbRowToDisclosure(data: DbDisclosureOutput): DisclosureOutput {
+  return {
+    id: data.id,
+    reportId: data.report_id,
+    assessmentId: data.assessment_id,
+    templateId: data.template_id || undefined,
+    templateVersion: data.template_version || undefined,
+    jurisdiction: data.jurisdiction as any,
+    listingStatus: data.listing_status as any,
+    generatedForCompany: data.generated_for_company,
+
+    // Parse JSONB fields (they may come back as strings in some cases)
+    sections: parseJsonField(data.sections, 'sections', []),
+    evidenceAppendix: parseJsonField(data.evidence_appendix, 'evidenceAppendix', []),
+    disclaimers: parseJsonField(data.disclaimers, 'disclaimers', []),
+    qualityChecklist: parseJsonField(data.quality_checklist, 'qualityChecklist', []),
+
+    // Metadata
+    generatedAt: data.generated_at,
+    generatedBy: data.generated_by,
+    format: data.format as any,
+    status: data.status as any,
+    errors: parseJsonField(data.errors, 'errors', []),
+
+    // Timestamps
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  };
 }
 
 /**
@@ -78,47 +129,8 @@ export function useDisclosureOutput(reportId: string) {
 
       if (!data) return null;
 
-      // CRITICAL FIX: Parse JSONB fields if they come back as strings
-      // Supabase usually auto-parses JSONB, but in some cases it may return strings
-      const parsed: any = { ...data };
-
-      if (typeof parsed.sections === 'string') {
-        try {
-          parsed.sections = JSON.parse(parsed.sections);
-        } catch (e) {
-          console.error('Failed to parse sections JSON:', e);
-          parsed.sections = [];
-        }
-      }
-
-      if (typeof parsed.evidence_appendix === 'string') {
-        try {
-          parsed.evidence_appendix = JSON.parse(parsed.evidence_appendix);
-        } catch (e) {
-          console.error('Failed to parse evidence_appendix JSON:', e);
-          parsed.evidence_appendix = [];
-        }
-      }
-
-      if (typeof parsed.disclaimers === 'string') {
-        try {
-          parsed.disclaimers = JSON.parse(parsed.disclaimers);
-        } catch (e) {
-          console.error('Failed to parse disclaimers JSON:', e);
-          parsed.disclaimers = [];
-        }
-      }
-
-      if (typeof parsed.quality_checklist === 'string') {
-        try {
-          parsed.quality_checklist = JSON.parse(parsed.quality_checklist);
-        } catch (e) {
-          console.error('Failed to parse quality_checklist JSON:', e);
-          parsed.quality_checklist = [];
-        }
-      }
-
-      return parsed as DisclosureOutput | null;
+      // Map database row to DisclosureOutput (handles snake_case → camelCase + JSONB parsing)
+      return mapDbRowToDisclosure(data as DbDisclosureOutput);
     },
     enabled: !!reportId,
     retry: (failureCount, error) => {
@@ -143,7 +155,10 @@ export function useDisclosureOutputById(disclosureId: string) {
         .single();
 
       if (error) throw error;
-      return data as unknown as DisclosureOutput;
+      if (!data) return null;
+
+      // Map database row to DisclosureOutput (handles snake_case → camelCase + JSONB parsing)
+      return mapDbRowToDisclosure(data as DbDisclosureOutput);
     },
     enabled: !!disclosureId,
   });
