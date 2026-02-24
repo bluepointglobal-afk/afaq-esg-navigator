@@ -1,7 +1,7 @@
 {
   "name": "afaq-backend",
-  "version": "1.0.0",
-  "description": "AFAQ ESG Navigator - Railway Backend for heavy compute",
+  "version": "1.0.1",
+  "description": "AFAQ ESG Navigator - Railway Backend for heavy compute (TypeScript fixes applied)",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
