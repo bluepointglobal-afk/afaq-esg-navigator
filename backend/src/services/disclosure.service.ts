@@ -689,7 +689,7 @@ CRITICAL CONSTRAINTS — READ CAREFULLY
    ` : ''}
 
 7. **DATA TIER TRANSPARENCY**: Every estimated metric needs:
-   ```
+   \`\`\`
    Metric: [Name]
    Value: [X]
    Tier: [1/2/3/4]
@@ -697,7 +697,7 @@ CRITICAL CONSTRAINTS — READ CAREFULLY
    Uncertainty: [±X%]
    Source: [Emission factor reference, benchmark source]
    Improvement: [How to get to Tier 1 by when]
-   ```
+   \`\`\`
 
 ═══════════════════════════════════════════════════════════════════════
 SELF-CHECK BEFORE RETURNING OUTPUT
@@ -719,51 +719,52 @@ READY. GENERATE DISCLOSURE NOW.
 }
 
 function parseDisclosureResponse(aiContent: string, companyProfile: any, frameworks: string[]): any {
-  // Parse AI-generated JSON response
-  let parsed;
   try {
-    parsed = JSON.parse(aiContent);
-  } catch (error: any) {
-    logger.error('Failed to parse AI response as JSON', {
-      error: error.message,
-      content: aiContent.substring(0, 500) // Log first 500 chars for debugging
-    });
-    throw new Error('AI returned non-JSON response');
-  }
-
-  // Validate structure
-  if (!parsed || typeof parsed !== 'object') {
-    logger.error('AI response is not an object', { parsed });
-    throw new Error('AI response has invalid structure');
-  }
-
-  if (!Array.isArray(parsed.sections)) {
-    logger.error('AI response missing sections array', { parsed });
-    throw new Error('AI response missing sections array');
-  }
-
-  if (parsed.sections.length === 0) {
-    logger.warn('AI returned empty sections array', { parsed });
-  }
-
-  // Validate each section has required fields
-  const validSections = parsed.sections.filter((s: any) => {
-    if (!s.id || !s.title || !s.narrative) {
-      logger.warn('Section missing required fields', { section: s });
-      return false;
+    // Parse AI-generated JSON response
+    let parsed;
+    try {
+      parsed = JSON.parse(aiContent);
+    } catch (error: any) {
+      logger.error('Failed to parse AI response as JSON', {
+        error: error.message,
+        content: aiContent.substring(0, 500) // Log first 500 chars for debugging
+      });
+      throw new Error('AI returned non-JSON response');
     }
-    return true;
-  });
 
-  return {
-    template_id: null,
-    template_version: '2.0',
-    jurisdiction: companyProfile.country,
-    generated_for_company: companyProfile.name,
-    selected_frameworks: frameworks,
-    sections: validSections,
-    evidence_appendix: [],
-    disclaimers: [
+    // Validate structure
+    if (!parsed || typeof parsed !== 'object') {
+      logger.error('AI response is not an object', { parsed });
+      throw new Error('AI response has invalid structure');
+    }
+
+    if (!Array.isArray(parsed.sections)) {
+      logger.error('AI response missing sections array', { parsed });
+      throw new Error('AI response missing sections array');
+    }
+
+    if (parsed.sections.length === 0) {
+      logger.warn('AI returned empty sections array', { parsed });
+    }
+
+    // Validate each section has required fields
+    const validSections = parsed.sections.filter((s: any) => {
+      if (!s.id || !s.title || !s.narrative) {
+        logger.warn('Section missing required fields', { section: s });
+        return false;
+      }
+      return true;
+    });
+
+    return {
+      template_id: null,
+      template_version: '2.0',
+      jurisdiction: companyProfile.country,
+      generated_for_company: companyProfile.name,
+      selected_frameworks: frameworks,
+      sections: validSections,
+      evidence_appendix: [],
+      disclaimers: [
         {
           id: 'disc-1',
           type: 'educational',
